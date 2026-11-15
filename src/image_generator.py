@@ -1,6 +1,4 @@
-# Makes one image per storyboard scene and saves them in images/
-# Krea AI generation is kept in a function, but the loop at the bottom uses stock images
-# Usage: python image_generator.py
+# Makes one Krea image per scene in inputs/storyboard.txt and saves them in images/
 import os
 import re
 import time
@@ -14,30 +12,39 @@ generate_url = "https://api.krea.ai/generate/image/krea/krea-2/medium-turbo"
 jobs_url = "https://api.krea.ai/jobs/"
 auth_headers = {"Authorization": f"Bearer {krea_api_key}"}
 
-style_reference_url = "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794715500160-cef26941-399c-4d9f-8f56-72ec17a3f809-sample.png"
+# Every image is styled after these reference images
+style_references = [
+    {"url": "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794717294567-f1cfd15e-2005-488b-a147-07e1ed20b0e5-image.png", "strength": 0.5},
+    {"url": "https://gen.krea.ai/images/42316208-f03c-447e-ae3a-06f5b498480a.png", "strength": 0.5},
+    {"url": "https://gen.krea.ai/images/385dcfd6-0e51-4f19-9fae-eccea0be25b1.png", "strength": 0.5},
+]
 
-os.makedirs("images", exist_ok=True)
+# Folders are found relative to this file so the script works from any directory
+project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+images_folder = os.path.join(project_folder, "images")
+os.makedirs(images_folder, exist_ok=True)
 
 # Split the storyboard into one block of text per scene
-storyboard_text = open("storyboard.txt").read()
+storyboard_text = open(os.path.join(project_folder, "inputs", "storyboard.txt")).read()
 scene_blocks = re.split(r"(?m)^scene #", storyboard_text)[1:]
 
 
 # Generates an image with Krea from the scene's script and direction text, returns the image bytes (or None)
 def generate_krea_image(scene_block):
-    # The prompt is the script and direction lines, same format as the example
-    prompt = "\n" + "\n".join(line for line in scene_block.splitlines() if line.startswith("* "))
+    # The prompt is the whole scene (title, script, direction) with a blank line between each part
+    scene_lines = [line for line in scene_block.splitlines() if line.strip() != ""]
+    prompt = "scene #" + "\n\n".join(scene_lines) + "\n"
 
     request_body = {
         "prompt": prompt,
-        "aspect_ratio": "4:3",
+        "aspect_ratio": "16:9",
         "resolution": "1K",
         "creativity": "medium",
-        "intensity": 0,
-        "complexity": 0,
-        "movement": 0,
+        "intensity": 25,
+        "complexity": 50,
+        "movement": 50,
         "strength": 0.99,
-        "image_style_references": [{"url": style_reference_url, "strength": 0.5}],
+        "image_style_references": style_references,
     }
 
     job_id = requests.post(generate_url, headers=auth_headers, json=request_body).json()["job_id"]
@@ -106,14 +113,11 @@ def find_stock_image(scene_block):
 for scene_block in scene_blocks:
     scene_number = scene_block.split(":")[0]
 
-    image_bytes = find_stock_image(scene_block)
+    image_bytes = generate_krea_image(scene_block)
 
     if image_bytes is None:
-        print(f"no image found for scene {scene_number}")
+        print(f"image failed for scene {scene_number}")
         continue
 
-    open(f"images/scene_{scene_number}.jpg", "wb").write(image_bytes)
-    print(f"saved images/scene_{scene_number}.jpg")
-
-    # Pause between scenes so Wikimedia does not block us for too many requests
-    time.sleep(3)
+    open(os.path.join(images_folder, f"scene_{scene_number}.png"), "wb").write(image_bytes)
+    print(f"saved images/scene_{scene_number}.png")
