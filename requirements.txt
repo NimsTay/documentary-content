@@ -1,0 +1,9 @@
+opencv-python 
+numpy
+torch
+diffusers
+transformers
+acceleratepython-dotenv
+requests
+mlx-audio
+misaki
