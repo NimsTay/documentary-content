@@ -1,4 +1,4 @@
-# Makes one video per image in images/ with a smooth zoom, gentle sway, twinkling bright spots and a fade in.
+# Makes one video per image in images/ with a smooth zoom, gentle sway, twinkling bright spots, parallax depth, vignette, film grain and a fade in.
 # Each video is as long as its audio clip: images/scene_1.png + audio/audio_1.wav -> videos/clip_1.mp4
 # Keeps your exact pixels, no AI. Run from the documentary-content folder:
 #   python src/motion_video.py
@@ -12,6 +12,7 @@ images_folder = "images"
 audio_folder = "audio"
 videos_folder = "videos"
 real_photos_folder = "real_photos"  # put real photos here named like scene_3.jpg (or .png / .jpeg) to overlay them on scene 3
+depth_maps_folder = "depth_maps"    # put grayscale depth maps here named like scene_3.png (white = close, black = far) to get parallax on scene 3
 
 # Real photo overlay settings
 photo_width_fraction = 0.55      # photo is this fraction of the video width (it is also kept under 80% of the height)
@@ -38,7 +39,23 @@ twinkles_per_second = 0.6
 bright_spot_threshold = 190
 
 # Sway settings: tiny slow camera drift so the shot feels handheld and alive (fraction of image width)
-sway_amount = 0.003
+sway_amount = 0.005
+
+# Film grain settings: moving speckles over the whole frame
+use_film_grain = True
+film_grain_strength = 8          # how strong the speckles are (out of 255), try 4 (subtle) to 15 (heavy)
+grain_texture_count = 12         # how many different speckle pictures to cycle through (more = less repeating, uses more memory)
+
+# Vignette settings: darker corners that pull the eye to the middle
+use_vignette = True
+vignette_strength = 0.4          # 0 = no darkening, 1 = corners fully black
+vignette_size = 0.3              # bigger = the dark area stays further out in the corners
+
+# Parallax depth settings: the bottom of the image (close) slides sideways more than the top (far)
+use_parallax = True
+parallax_pixels = 30             # how far the closest part slides, in pixels of the original image (try 30 for subtle, 100 for strong)
+parallax_speed = 0.32             # how fast it slides back and forth
+use_fake_gradient_depth = False  # when a scene has no depth map: True = use a top-to-bottom gradient (stretches the image), False = no parallax for that scene
 
 # Read the motion words from the text
 zoom_out = "zoom out" in motion_text
@@ -97,7 +114,50 @@ def overlay_photo(frame, framed_photo, photo_zoom, photo_alpha):
     return frame
 
 
-def make_clip(image_path, audio_path, clip_path, photo_path=None):
+def make_film_grain_textures(width, height):
+    # Make a few random speckle pictures once and reuse them in a loop (making new noise every frame is very slow).
+    # The same value is added to all colors so it looks like film grain, not color noise.
+    grain_textures = []
+    for texture_number in range(grain_texture_count):
+        grain = np.random.normal(0, film_grain_strength, (height, width)).astype(np.float32)
+        grain_textures.append(grain[:, :, None])
+    return grain_textures
+
+
+def make_vignette_mask(width, height):
+    # A mask that is 1 in the middle and gets darker toward the corners (made once, then multiplied onto every frame)
+    horizontal_curve = cv2.getGaussianKernel(width, width * vignette_size)
+    vertical_curve = cv2.getGaussianKernel(height, height * vignette_size)
+    bright_in_middle = vertical_curve * horizontal_curve.T
+    bright_in_middle = bright_in_middle / bright_in_middle.max()
+    return (1 - vignette_strength * (1 - bright_in_middle)).astype(np.float32)
+
+
+def load_depth_map(depth_map_path, image_height, image_width):
+    # Read a grayscale picture where white = close and black = far, as numbers from 0 to 1 in the same size as the scene image
+    depth_picture = cv2.imread(depth_map_path, cv2.IMREAD_GRAYSCALE)
+    depth_picture = cv2.resize(depth_picture, (image_width, image_height))
+    depth_map = depth_picture.astype(np.float32) / 255
+    # Soften the edges a little so the layers do not tear apart when they slide
+    return cv2.GaussianBlur(depth_map, (0, 0), 5)
+
+
+def make_depth_map(image_height, image_width):
+    # Fake depth: the top of the image counts as far away (0) and the bottom as close (1).
+    # This suits upward-looking shots (people at the bottom, sky at the top). Swap in a real depth map image here if you ever have one.
+    depth_from_top_to_bottom = np.linspace(0, 1, image_height, dtype=np.float32)
+    # Squared so the top half barely moves and the bottom (the close people) moves a lot, which makes the depth easier to see
+    return np.tile(depth_from_top_to_bottom[:, None] ** 2, (1, image_width))
+
+
+def apply_parallax(image, depth_map, pixel_grid_x, pixel_grid_y, seconds_so_far):
+    # Slide each pixel sideways by an amount that depends on how close it is, so near parts move more than far parts
+    sideways_shift = np.sin(seconds_so_far * parallax_speed) * parallax_pixels
+    shifted_grid_x = (pixel_grid_x - depth_map * sideways_shift).astype(np.float32)
+    return cv2.remap(image, shifted_grid_x, pixel_grid_y, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+
+
+def make_clip(image_path, audio_path, clip_path, photo_path=None, depth_map_path=None):
     video_seconds = get_audio_seconds(audio_path)
 
     image = cv2.imread(image_path)
@@ -128,6 +188,17 @@ def make_clip(image_path, audio_path, clip_path, photo_path=None):
     # Give every area its own random timing so spots twinkle one by one instead of all together
     random_timing = np.random.rand(image_height // 20 + 1, image_width // 20 + 1).astype(np.float32)
     random_timing = cv2.resize(random_timing, (image_width, image_height)) * 2 * np.pi
+
+    # Things the parallax and vignette effects need, made once per clip
+    # Depth map: use the scene's depth map picture if there is one, otherwise the fake gradient (if allowed), otherwise no parallax
+    depth_map = None
+    if depth_map_path:
+        depth_map = load_depth_map(depth_map_path, image_height, image_width)
+    elif use_fake_gradient_depth:
+        depth_map = make_depth_map(image_height, image_width)
+    pixel_grid_x, pixel_grid_y = np.meshgrid(np.arange(image_width, dtype=np.float32), np.arange(image_height, dtype=np.float32))
+    vignette_mask = make_vignette_mask(output_width, output_height)
+    grain_textures = make_film_grain_textures(output_width, output_height)
 
     # Load the real photo once if this scene has one
     framed_photo = None
@@ -166,6 +237,10 @@ def make_clip(image_path, audio_path, clip_path, photo_path=None):
         brightness_change = 1 + twinkle_strength * bright_spot_mask * twinkle_wave
         twinkling_image = np.clip(image * brightness_change[:, :, None], 0, 255).astype(np.float32)
 
+        # Parallax: slide the close parts of the image more than the far parts
+        if use_parallax and depth_map is not None:
+            twinkling_image = apply_parallax(twinkling_image, depth_map, pixel_grid_x, pixel_grid_y, seconds_so_far)
+
         # Size of the area of the image the camera sees right now
         visible_width = image_width / zoom
         visible_height = visible_width * output_height / output_width
@@ -196,6 +271,12 @@ def make_clip(image_path, audio_path, clip_path, photo_path=None):
                 frame = frame * (1 - background_darken * photo_alpha)
                 frame = overlay_photo(frame, framed_photo, photo_zoom, photo_alpha)
 
+        # Final look: darker corners, then film grain on top of everything
+        if use_vignette:
+            frame = frame * vignette_mask[:, :, None]
+        if use_film_grain:
+            frame = frame + grain_textures[frame_number % grain_texture_count]
+
         ffmpeg.stdin.write(np.clip(frame, 0, 255).astype("uint8").tobytes())
 
     ffmpeg.stdin.close()
@@ -215,7 +296,10 @@ for image_path in image_paths:
     # Use a real photo for this scene if one exists, e.g. real_photos/scene_3.jpg
     photo_files = glob.glob(real_photos_folder + "/scene_" + scene_number + ".*")
     photo_path = photo_files[0] if photo_files else None
-    print("Making", clip_path, "with real photo" if photo_path else "")
-    make_clip(image_path, audio_files[0], clip_path, photo_path)
+    # Use a depth map for this scene if one exists, e.g. depth_maps/scene_3.png
+    depth_map_files = glob.glob(depth_maps_folder + "/scene_" + scene_number + ".*")
+    depth_map_path = depth_map_files[0] if depth_map_files else None
+    print("Making", clip_path, "with real photo" if photo_path else "", "with depth map" if depth_map_path else "")
+    make_clip(image_path, audio_files[0], clip_path, photo_path, depth_map_path)
 
 print("Done! Clips saved in", videos_folder + "/")
