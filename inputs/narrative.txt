@@ -1,108 +1,179 @@
-TITLE: THE COUNT WHO CONQUERED THE SKY
-The Story of Ferdinand von Zeppelin
+Scene #1
+* Script: Imagine lying on your back inside a cramped metal ball. Beneath you, a rocket packed with fuel. Above you... nothing but sky. No human being has ever done what you are about to do. Not one. Not ever.
+* Visual prompt: Cinematic photorealistic style with grainy 1961 Soviet film texture, tense and dim. Interior of a Vostok spacecraft cabin, a tight spherical metal room painted pale gray-green, seen from just behind and above the headrest of a reclined ejection seat. A figure in a bright orange pressure suit and plain white helmet (no lettering) lies back in the seat, seen only from behind. In the midground, a small round porthole shows a thin strip of blue sky. In the background, a curved instrument panel with round dials, toggle switches and a small globe-shaped indicator, all with blank, unreadable faces. Cool light from the porthole against warm amber panel glow, claustrophobic framing. Faces: no faces visible, the figure is seen only from behind. Hands: no hands visible, keep them out of frame. No text: no words, letters, numbers, signs, logos, or writing anywhere, every dial and panel surface blank.
+* Direction: Fade in from black. Start on a tight static view of the back of the helmet, then a very slow push in toward the small porthole, revealing the blue sky beyond. Slow, hushed, tense pacing. Mood of held breath and awe.
 
-[SCENE 1 - COLD OPEN]
+Scene #2
+* Script: It is April twelfth, 1961, on a windswept desert plain in Kazakhstan. The Soviet Union and America are racing each other toward the stars. So far, the Soviets are ahead. But no one has dared to launch a person... until today.
+* Visual prompt: Vintage faded color film style like early 1960s Kodachrome, wide landscape. The flat, dry Kazakh steppe at dawn near Baikonur, pale golden grass and dust, long soft shadows. In the far background a tall white-and-silver Vostok rocket stands on a launch pad inside a steel service tower. In the midground a few olive-green Soviet military trucks and a low concrete building. In the foreground, empty dirt road and dry scrub. Hazy pink-orange sky, vast and lonely mood. Faces: no faces visible, any people are tiny distant silhouettes. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on trucks, buildings or rocket, all surfaces blank.
+* Direction: Slow aerial-style drift forward from the empty foreground toward the distant rocket. Calm, sweeping pacing. Dissolve in from the previous scene. Reveals the rocket small against the huge empty steppe, creating a sense of scale and anticipation.
 
-Today, flying feels ordinary.
+Scene #3
+* Script: First came Sputnik, the world's first satellite. Then dogs, sent into orbit and brought home alive. Then a test dummy, flown around the Earth before the real attempt. Every step was a gamble. And one giant question remained... could a human being survive up there?
+* Visual prompt: Painterly semi-realistic style with 1950s Soviet space-age feel. In the foreground, a small mongrel dog, white with brown patches, in a snug canvas flight harness, peeking out of the round open hatch of a small metal test capsule, shown with exactly one dog face, natural proportions, curious calm eyes. In the background, the black of space with the curved blue edge of the Earth and a polished silver Sputnik 1 satellite, a smooth round sphere with four long thin swept-back antennas. Soft rim lighting from the sun. Hopeful but uncertain mood. Faces: only one visible face, the dog's, with natural proportions, correct eyes, nose and mouth; no human faces. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing on the capsule or satellite, surfaces blank.
+* Direction: Slow push in on the dog's face, then a gentle tilt up to reveal Sputnik glinting above the Earth. Slow, wondering pacing. Dissolve from the previous scene. Mood of curiosity with a hint of danger.
 
-But two hundred years ago, the idea of a giant ship floating through the air sounded like madness.
+Scene #4
+* Script: Some scientists feared weightlessness might drive a person mad. Others wondered if a human could even swallow food. Nobody knew! The only way to find out was to send somebody. And that somebody would need nerves of steel.
+* Visual prompt: Moody 1950s Soviet laboratory in desaturated black-and-white photograph style with a faint green tint. A silhouetted doctor in a white lab coat, seen from behind with both hands clasped behind the back, stands before a wall of machines: an oscilloscope showing a wavy glowing line, rows of round dials, reel-to-reel tape machines. In the background a heavy sealed round-window test chamber door, dimly lit. Single hanging lamp casting hard shadows, tense and uncertain mood. Faces: no faces visible, the doctor is seen from behind. Hands: hands hidden behind the doctor's back, none visible. No text: no words, letters, numbers, signs, logos, or writing anywhere, all dials and labels blank.
+* Direction: Slow creeping push in from behind the doctor toward the glowing oscilloscope line. Tense, quiet pacing. Cut in sharply from the previous scene. Ends with the green wave filling the frame, hinting at the unknown.
 
-One man refused to believe it was impossible.
+Scene #5
+* Script: So the search began. Thousands of fighter pilots were screened. Twenty were chosen. They spun in giant centrifuges until their vision went gray. They sat alone in silent, dark chambers for days. Only the toughest would make it.
+* Visual prompt: Dramatic documentary photograph style, 1960 Soviet training facility, cool steel-gray tones with motion blur. A huge human centrifuge in a large concrete hall: a long steel arm spinning around a central axis with a small closed metal gondola at its tip, the arm smeared by motion blur. Closed gondola, nobody visible. In the foreground, heavy cables and a thick bolted base. In the background, high factory windows with hazy light and bare concrete walls. Harsh, industrial, intense mood. Faces: no faces visible, the gondola is closed and the hall is empty. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or painted markings anywhere, all surfaces blank concrete and steel.
+* Direction: Fast, circular camera move that follows the spinning arm in a quick orbit, then a sudden stop on the gondola. Quick, intense pacing. Cut in from the previous scene. Mood of strain and endurance.
 
-His name was Ferdinand von Zeppelin.
+Scene #6
+* Script: And one man kept rising to the top. A fighter pilot, just five feet two inches tall, small enough for the cramped capsule, and famous for a smile that put everyone at ease. His name was Yuri Gagarin!
+* Visual prompt: Warm vintage 1960 color photograph style, golden hour backlight. A young short Soviet Air Force pilot in a dark blue-gray tunic and flight cap, seen as a full-body silhouette from behind, standing on an airfield tarmac. Next to him is a silver MiG-15 fighter jet, a swept-wing early jet with a bubble canopy, towering over him so his small stature is clear. Long shadows across the concrete, low sun glowing behind, a few distant hangars on the horizon. Heroic and warm mood. Faces: no faces visible, the pilot is seen from behind in silhouette. Hands: hands relaxed and hidden by the backlight and the figure's body, no clear hands visible. No text: no words, letters, numbers, signs, logos, or markings on the jet or hangars, all surfaces blank.
+* Direction: Slow upward tilt from the tarmac and long shadow, up the silhouetted figure, ending with the sun flaring behind his head. Gentle, building pacing. Dissolve from the previous scene. Mood of quiet destiny and pride.
 
-[SCENE 2 - THE SEED OF AN IDEA]
+Scene #7
+* Script: Chief Designer Sergei Korolev watched every candidate closely. The story goes that Gagarin took off his shoes before climbing into the capsule, treating it with respect. Korolev noticed. In the end, the choice was made. Yuri Gagarin would fly first.
+* Visual prompt: Realistic photograph style, 1960 Soviet spacecraft workshop, warm tungsten light. A heavy-set man in a dark civilian suit, seen from behind with both arms folded behind his back, stands in a large workshop looking at a round metal spherical Vostok capsule mock-up with its circular hatch open. On the floor beside the hatch, a pair of black leather shoes placed neatly side by side. In the background workbenches, coiled wires, steel scaffolding and dusty light shafts. Quiet, observant mood. Faces: no faces visible, the man is seen from behind. Hands: hands hidden behind the man's back, none visible. No text: no words, letters, numbers, signs, logos, or writing on the capsule, benches or walls, all surfaces blank.
+* Direction: Slow push in over the man's shoulder toward the open hatch, ending on the neatly placed shoes. Slow, thoughtful pacing. Dissolve from the previous scene. Mood of quiet approval.
 
-Ferdinand was born in 1838 in Konstanz, Germany, on the shores of Lake Constance. He grew up in a noble family and became an army officer.
+Scene #8
+* Script: Launch morning. Gagarin, in a bright orange suit, rode the bus toward the pad. Halfway there, he asked the driver to stop for a quick, very human pit stop. Cosmonauts still repeat that ritual before every launch today.
+* Visual prompt: Faded early 1960s color film look, cold dawn light. A small boxy rounded-body 1960s Soviet bus in pale blue with a white roof, parked on a dusty dirt road crossing the flat Kazakh steppe, seen from behind and slightly to the side. Beside the rear wheel, two tiny figures in bright orange pressure suits stand far in the distance, seen from behind. In the background, the pale blue dawn sky and a faint white rocket on the horizon. Soft, light-hearted mood. Faces: no faces visible, the figures are tiny and seen from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the bus, all surfaces blank.
+* Direction: Static wide shot, then a very slow, gentle pull back to reveal the bus alone in the huge steppe. Relaxed, gently humorous pacing. Cut in from the previous scene. Mood of calm and light-heartedness before the storm.
 
-In 1863, he traveled to America to observe the Civil War. And in Minnesota, he climbed into a hot air balloon.
+Scene #9
+* Script: Then he stood beneath the rocket. A towering Vostok, built from a military missile, steaming in the cold morning air. Gagarin looked up at it... then rode the elevator to the top. Next stop, history.
+* Visual prompt: Dramatic low-angle photograph style, early 1960s, crisp morning light. A towering silver-and-white Vostok rocket, a central core with four tapering conical strap-on boosters around its base, a pointed nose fairing at the top, standing in a steel gantry with open steel arms around it. White vapor streams from its sides in the cold air. In the foreground, one tiny figure in an orange suit seen from behind at the base of the gantry, next to a rattling open-cage elevator. Deep blue sky above, strong sense of scale. Faces: no faces visible, the figure is tiny and seen from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, flags with writing, or markings on the rocket or tower, all surfaces blank.
+* Direction: Start at the tiny figure, then a long slow tilt up the whole length of the rocket to the nose cone against the sky. Slow, awe-filled pacing. Dissolve from the previous scene. Mood of grandeur and scale.
 
-For the first time, he saw the world from above.
+Scene #10
+* Script: Inside, the capsule was a tight sphere with tiny windows. The controls were locked, because doctors feared he might lose his senses in space. The unlock code waited in a sealed envelope... just in case. Gagarin was a passenger, as much as a pilot.
+* Visual prompt: Close-up photorealistic style, 1961 Soviet spacecraft interior, warm amber panel glow. A curved control panel inside a spherical cabin with a small round porthole, round gauges, switches and a covered control lever with a small metal cover latched shut. Taped near the controls, a plain unmarked cream-colored sealed envelope with a blank face. Cramped metal walls, bundles of wires, soft lens vignette. Tense, secretive mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing anywhere, the envelope and every dial blank.
+* Direction: Slow push in on the sealed envelope with a tiny drift to the side, ending on its blank surface. Slow, tense pacing. Cut in from the previous scene. Mood of suspense and mystery.
 
-But he also saw the problem. A balloon could rise... but it could not be steered. It went wherever the wind pushed it.
+Scene #11
+* Script: Then came the waiting. Hours of it. Gagarin lay on his back, chatting with Korolev over the radio while music played in his headset. His pulse stayed calm. Outside, the world had no idea what was about to happen.
+* Visual prompt: Atmospheric 1961 Soviet launch bunker in muted film color, dim amber lamps. A long room with rows of gray metal control consoles, round dials, reel-to-reel tape recorders and one old microphone on a stand in the foreground. Several men in dark suits seen from behind, small and far away, hunched over consoles. A small narrow window shows the white rocket far away in pale light. Quiet, tense mood. Faces: no faces visible, the men are seen from behind and far away. Hands: no hands visible, men's arms hidden by consoles and distance. No text: no words, letters, numbers, signs, logos, or writing on any console, wall or screen, all surfaces blank.
+* Direction: Slow dolly forward through the room past the microphone toward the narrow window with the distant rocket. Slow, hushed pacing. Dissolve from the previous scene. Mood of nervous patience.
 
-From that day on, one question stayed in his mind.
+Scene #12
+* Script: At 9:07 in the morning, the engines ignited! The ground shook. Gagarin shouted one word into his radio. Poyekhali!... Let's go! And the rocket thundered up into the sky.
+* Visual prompt: Powerful low-angle documentary photograph style, 1961. A silver-and-white Vostok rocket lifting off from its pad, an enormous orange-white fire plume from many engine nozzles, billowing clouds of steam and dust rolling across the steppe, the steel gantry arms swung open. In the foreground tiny silhouettes of onlookers seen from behind, far away, shielding their eyes. Bright sunlight, deep blue sky, shockwave-ripples in the dust. Triumphant, thundering mood. Faces: no faces visible, the onlookers are tiny silhouettes from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the rocket or tower, all surfaces blank.
+* Direction: Start static at the moment of ignition, then a fast push in followed by a rapid tilt up to follow the rocket into the sky. Quick, explosive pacing. Hard cut in from the previous scene. Mood of triumph and raw power.
 
-What if we could build a flying machine that we could actually control?
+Scene #13
+* Script: The force pressed him deep into his seat, heavier and heavier. Then the rocket stages fell away. The engines cut out. And suddenly... silence. Yuri Gagarin was weightless, high above the Earth.
+* Visual prompt: Cinematic photorealistic style, high-altitude view, deep blue fading to black. A Vostok rocket high in the atmosphere, its four conical side boosters swinging away from the central core in a flower-like pattern, thin trails of flame fading, bright sun glinting on the metal. The curved edge of the Earth glows far below with thin white clouds. Clean, silent, awe-inspiring mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the rocket, all surfaces blank.
+* Direction: Start fast and shaky as the rocket climbs, then slow down as the boosters separate, ending on a still, silent floating shot. Pacing moves from fast to hushed. Cut in from the previous scene. Mood shifts from roar to stunned silence.
 
-[SCENE 3 - THE BIG DESIGN]
+Scene #14
+* Script: He looked through the window and saw what no human had ever seen. The curve of the Earth. A soft blue glow wrapped around the planet. Black sky above it. He radioed back that it was beautiful.
+* Visual prompt: Breathtaking photorealistic style, view through a small round spacecraft porthole. A thick metal porthole frame with rivets in the foreground, outside it the curved horizon of the Earth with bright blue oceans, white clouds and a thin glowing blue atmosphere halo, above it deep black space with sharp stars. Soft sunlight lighting the edge of the frame. Magical, silent, awe-filled mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing anywhere, the porthole frame blank.
+* Direction: Fade in from black. Very slow push in toward the porthole until the glowing Earth fills the frame. Slow, reverent pacing. Mood of pure awe and wonder.
 
-In 1890, at the age of fifty-two, Ferdinand was forced to retire from the army.
+Scene #15
+* Script: And he got to work. He ate food from tubes. He drank water. He tried to write notes... and his pencil floated away! Small moments, but huge proof. Humans could eat, think, and work in space. The fear of madness was gone.
+* Visual prompt: Clean photorealistic style, interior of a 1961 Vostok capsule in weightlessness, soft light from a porthole. A yellow wooden pencil floating in mid-air, drifting slowly, next to a small metal squeeze tube and a loose water pouch also floating, their surfaces blank and unlabeled. In the background the curved gray capsule wall and one round porthole showing blue light. Gentle, playful mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing on the tube, pouch, walls or pencil, all surfaces blank.
+* Direction: Slow lateral drift following the floating pencil as it turns lazily, ending on the porthole glow. Slow, playful pacing. Dissolve from the previous scene. Mood of light wonder and relief.
 
-Most people would have slowed down. Ferdinand did the opposite.
+Scene #16
+* Script: All the while, he was flying at more than twenty-seven thousand kilometers an hour. Siberia, the Pacific, South America, Africa... whole continents slid beneath him in minutes. He circled the planet once, in under an hour and a half.
+* Visual prompt: Epic space-view photorealistic style. A small Vostok spacecraft, a dark rounded sphere attached to a conical instrument module, seen from a distance as a tiny silhouette crossing above the vast blue Pacific Ocean on Earth. A bright golden sunrise line, the terminator, sweeps across the planet. Thin white cloud swirls, deep black space above. Majestic, sweeping mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, map lines or labels anywhere, all surfaces blank.
+* Direction: Slow sweeping pan along the planet's curve, tracking the tiny spacecraft as the sunrise line spreads across the oceans. Sweeping, majestic pacing. Dissolve from the previous scene. Mood of speed and grandeur.
 
-He designed a new kind of airship. Not a soft balloon, but a rigid one. A long, lightweight metal frame, covered in fabric, holding many separate cells of gas inside.
+Scene #17
+* Script: Here's a fun twist. While he was up there, he was promoted from senior lieutenant to major. He got a bigger rank... over three hundred kilometers above the Earth.
+* Visual prompt: Elegant surreal-realistic style. Two pairs of ceremonial Soviet Air Force officer shoulder boards with a pale blue field, gold braid borders and small gold stars, floating gently in front of the glowing blue curve of the Earth, catching sunlight. Dark space and fine stars behind, soft glow around the gold. Playful, proud mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing on the shoulder boards or anywhere, all surfaces blank apart from small plain gold stars.
+* Direction: Slow gentle push in with a slight rotation of the floating shoulder boards, ending in a sparkle of sunlight on the gold. Slow, light pacing. Dissolve from the previous scene. Mood of warm humor and pride.
 
-The frame kept its shape. The engines drove it forward. And a crew could steer it.
+Scene #18
+* Script: Then... trouble. Coming home, the instrument module failed to separate from the capsule. Thick cables still tied the two together. The whole spacecraft began to tumble and spin, wildly, as the heat of re-entry built around it.
+* Visual prompt: Dramatic cinematic style, view from outside the atmosphere's edge. A dark rounded spherical Vostok capsule tethered by thick cables to a gray conical instrument module, the two tumbling end over end, trailing an orange-white glow of heated plasma and sparks. Deep blue Earth glowing below, black sky above. Violent, dangerous mood, motion blur on the tumbling parts. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the capsule or module, all surfaces blank.
+* Direction: Quick, shaky camera that follows the tumbling spacecraft, with a rising orange glow. Fast, tense pacing. Cut in sharply from the previous scene. Mood of danger and rising panic.
 
-He patented the design in 1895. And then he began to build.
+Scene #19
+* Script: For about ten minutes, Gagarin was trapped in a spinning fireball. Flames glowed outside the window. He stayed calm. And then, at last, the cables burned through! The capsule steadied, and started to fall the right way.
+* Visual prompt: Intense interior photorealistic style, 1961 spherical capsule. A small round porthole filled with streaming orange and yellow flames, flickering firelight flooding the gray metal cabin, deep shadows moving on the curved walls. In the foreground a orange-suited figure's white helmet seen only from behind, blurred and small. Heat shimmer and vibration blur. Terrifying but controlled mood. Faces: no faces visible, only the back of the helmet. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing anywhere, all surfaces blank.
+* Direction: Handheld shaking feel, slow push in toward the flaming porthole, then a sudden steadying of the frame as the flames calm to a glow. Quick and tense, then a release of pressure. Mood from fear to relief.
 
-[SCENE 4 - THE WORLD LAUGHS]
+Scene #20
+* Script: Seven kilometers above the ground, the hatch blasted away. Gagarin shot out in his ejector seat, then floated down on his own parachute. That was the plan all along. The capsule had no soft landing for a person.
+* Visual prompt: Dynamic aerial style, 1961, bright daylight. High above a patchwork of green and brown Russian farmland and a wide river, a circular metal hatch cover flying away from a scorched round capsule, and a small ejection seat with a tiny orange-suited figure seen from behind blasting out, a small round parachute just beginning to open above. White clouds below, deep blue sky. Dramatic, surprising mood. Faces: no faces visible, the figure is tiny and seen from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings anywhere, all surfaces blank.
+* Direction: Start on the hatch flying off, then a quick tilt down following the small figure as the parachute blooms. Quick, bursting pacing that settles into a gentle float. Hard cut in from the previous scene. Mood of sudden surprise turning to relief.
 
-Nobody believed in him.
+Scene #21
+* Script: He landed in a quiet farm field near the Volga River. A woman and her young granddaughter stared in shock. Imagine it. A stranger in a bright orange spacesuit and a white helmet, dragging a giant parachute across the grass.
+* Visual prompt: Warm nostalgic 1961 color film style, soft spring afternoon light. A wide green field of young spring grass near a river, with a huge orange-and-white parachute canopy lying crumpled across the grass in the midground. In the far distance, a tiny figure in an orange suit and white helmet walking away from camera, seen from behind. Further off, a woman in a headscarf and a small girl standing together, seen very small and from behind. A wooden village cottage on the horizon, a few birch trees. Gentle, surprising, a little comic mood. Faces: no faces visible, all people are tiny and seen from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings anywhere, all surfaces blank.
+* Direction: Static wide shot with a very slow push in on the distant figures. Calm, gently humorous pacing. Dissolve from the previous scene. Reveals the strange meeting of the old and the new world.
 
-Experts said it was impossible. Newspapers mocked him. Investors turned him away.
+Scene #22
+* Script: He calmed them down. He was Soviet, just like them, he explained. He had come down from space. And he needed to find a telephone to call Moscow. It might be the most unusual request ever made in a farm field.
+* Visual prompt: Cozy realistic painterly style, interior of a small 1961 Russian village house, warm window light. A heavy black Bakelite rotary telephone with a blank dial face sitting on a rough wooden table covered with a plain embroidered cloth, a white spaceflight helmet with no lettering resting right beside it. A simple window shows a green field outside. Wood-plank walls, a woven rug, a small samovar in the background. Quiet, humorous, intimate mood. Faces: no faces visible, no people in the frame. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing anywhere, the telephone dial completely blank.
+* Direction: Slow push in on the telephone and helmet side by side, ending with a small dolly to the window. Slow, warm pacing. Dissolve from the previous scene. Mood of charm and understated humor.
 
-So Ferdinand used his own money, and started a company. He built a floating workshop on Lake Constance, and gathered a team of engineers.
+Scene #23
+* Script: Then the news exploded. The Soviet Union had put a human in space! The whole world was stunned. In Moscow, huge crowds filled Red Square, waving flags and flowers for a twenty-seven-year-old pilot. Yuri Gagarin was a hero overnight.
+* Visual prompt: Colorized archival photograph style, April 1961. A high aerial view of Moscow's Red Square packed with a vast crowd, a sea of tiny people carrying plain red flags and bouquets of flowers, red banners hung along the Kremlin walls, St. Basil's Cathedral with its colorful onion domes at the edge of the square. Bright spring sunshine, confetti and paper floating in the air. Joyful, huge, celebratory mood. Faces: no faces visible, the crowd is far too small and distant to show features. Hands: no hands visible, only tiny distant waving shapes. No text: no words, letters, numbers, signs, logos, or writing on any banner, flag or building, all banners plain red.
+* Direction: Slow descent from high above the square, a gentle drift forward over the sea of flags. Sweeping, building pacing. Dissolve from the previous scene. Mood of national joy and triumph.
 
-[SCENE 5 - LZ 1]
+Scene #24
+* Script: The entire flight had lasted just one hundred and eight minutes. Less than the length of a long movie. Yet in that short time, he had proven that humans could travel beyond the sky, and return home alive.
+* Visual prompt: Quiet documentary photograph style, early 1960s, soft overcast light. A scorched, blackened spherical Vostok capsule resting on its side in a plowed brown field, wisps of smoke curling from it, the round open hatch hole facing the sky, parachute lines trailing. In the distance, a military truck and a few tiny figures far away, seen from behind. Gray-blue spring sky, damp soil. Peaceful, reflective mood. Faces: no faces visible, the people are tiny and far away. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the capsule or truck, all surfaces blank.
+* Direction: Very slow, gentle push in on the charred sphere, with smoke drifting in the wind. Slow, reflective pacing. Dissolve from the previous scene. Mood of quiet achievement.
 
-On the second of July, 1900, his first airship, LZ 1, rose from the lake.
+Scene #25
+* Script: But the Soviets kept a secret. International rules said a record-setting flight had to end with the pilot inside his spacecraft. Gagarin had parachuted out! So for about ten years, the official story said he landed in the capsule. The truth came out later.
+* Visual prompt: Moody black-and-white photograph style, 1961 Soviet government office, a single desk lamp casting a pool of light in the dark. A heavy gray steel safe with a blank round dial and a blank handle in the background. In the foreground on a wooden desk, a plain unmarked brown file folder tied shut with a red ribbon, next to a closed leather briefcase. Heavy curtains, deep shadows, secretive mood. Faces: no faces visible, no people in the frame. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, stamps or writing on the folder, safe or anywhere, all surfaces blank.
+* Direction: Slow creeping push in on the sealed folder in the pool of lamplight, with the safe fading into darkness behind. Slow, tense pacing. Cut in from the previous scene. Mood of secrecy and intrigue.
 
-It was over one hundred and twenty meters long. Longer than a football field.
+Scene #26
+* Script: Across the ocean, America felt the shock. Twenty-three days later, Alan Shepard became the first American in space. Twenty days after that, President Kennedy made a bold promise: land a man on the Moon before the decade was over.
+* Visual prompt: Crisp 1961 Kodachrome-like color photograph style, Cape Canaveral, Florida. A slim black-and-white Redstone rocket with a small bell-shaped Mercury capsule on top, standing on a launch pad next to a tall red-orange steel service tower, with palm trees and a calm blue ocean in the background. Bright, hot sunlight and a pale sky with a few puffy white clouds. Determined, hopeful mood. Faces: no faces visible, no people in frame. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the rocket or tower, all surfaces blank.
+* Direction: Slow upward tilt along the rocket from the base to the capsule at the top, ending with the Moon faintly visible in the daytime sky. Steady, determined pacing. Cut in from the previous scene. Mood of rivalry and resolve.
 
-The engines roared. The giant lifted into the air.
+Scene #27
+* Script: Gagarin's flight lit the fuse of the Space Race. Engineers, scientists, and entire nations raced to build bigger rockets. And in 1969, Apollo 11 landed on the Moon! Every step of that journey began with one orbit in 1961.
+* Visual prompt: Sharp photorealistic style based on 1969 lunar photography. The gray, dusty surface of the Moon in the foreground with soft footprints, the gold-and-silver Apollo lunar module with four spindly legs in the midground, and one astronaut in a bulky white suit and reflective gold-visored helmet seen from far away and from behind. Pitch-black sky with a bright blue-and-white Earth hanging above the horizon. Stark light and long shadows. Triumphant, silent mood. Faces: no faces visible, the astronaut is far away and seen from behind. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or writing on the lander or suit, all surfaces blank.
+* Direction: Slow pull back from the footprints to a wide view of the lander with Earth above. Slow, majestic pacing. Dissolve from the previous scene. Mood of triumph and cosmic scale.
 
-It flew for only eighteen minutes, before a failure forced it down.
+Scene #28
+* Script: Others followed fast. In 1963, Valentina Tereshkova became the first woman in space. In 1965, Alexei Leonov floated outside his spacecraft on the first spacewalk. Each of them stood on the path Gagarin had blazed.
+* Visual prompt: Cinematic photorealistic style, 1965. A single cosmonaut in a bulky white spacesuit with a rounded white helmet, floating alone in space, seen small and from behind, attached by a thin cable to a spacecraft with a short inflatable white airlock tube extending from it. Below, the glowing blue Earth with white clouds fills the lower half of the frame, black space above. Gloves kept small and hidden, arms held close to the body. Floating, calm, majestic mood. Faces: no faces visible, the cosmonaut is seen from behind and far away. Hands: hands barely visible in distant gloves, if shown each glove has exactly five natural fingers, normal thumb placement. No text: no words, letters, numbers, signs, logos, or markings on the suit or spacecraft, all surfaces blank.
+* Direction: Slow drift back and around the floating figure, keeping the Earth below, ending on a wide view of the figure and ship. Slow, floating pacing. Dissolve from the previous scene. Mood of wonder and freedom.
 
-But it had flown. A rigid airship had taken off under power, and under control.
+Scene #29
+* Script: His flight changed science, too. In 1971, the Soviets launched Salyut 1, the first space station. Then came Mir. Then the International Space Station, where people have lived and worked nonstop since the year 2000. Floating laboratories, all built on the lessons of that first orbit.
+* Visual prompt: Clean photorealistic style, 1990s space photography look. The Mir space station, a long central cylindrical core module with several smaller cylindrical modules attached in a cross-shaped arrangement and large rectangular dark-blue solar panels spread out like wings, orbiting above the bright blue Earth with white clouds. Sunlight glinting on the silver and white metal, black space above. Majestic, hopeful mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, flags, or markings on the station, all surfaces blank.
+* Direction: Slow drift around the station, with the Earth sliding beneath it, ending on a wide view of the solar panels catching the sun. Slow, majestic pacing. Dissolve from the previous scene. Mood of progress and wonder.
 
-[SCENE 6 - FAILURE AFTER FAILURE]
+Scene #30
+* Script: Soon, the sky above us filled with machines. Satellites began to track storms, relay television across oceans, and photograph the planet from above. Spaceflight stopped being a stunt and became a tool. The door Gagarin opened never closed again.
+* Visual prompt: Elegant photorealistic style, orbital night scene. An early 1960s communications satellite, a round faceted sphere covered with small dark solar cells and a pair of short antennas, orbiting above the night side of the Earth, which glows with golden city lights and thin curving clouds. A thin blue line of dawn on the horizon. Calm, hopeful mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the satellite, all surfaces blank.
+* Direction: Slow push in toward the faceted satellite as the city lights glow below, then a gentle tilt up toward the dawn line. Slow, serene pacing. Dissolve from the previous scene. Mood of quiet progress.
 
-But success did not come easy.
+Scene #31
+* Script: Even the ride has lasted. Today's Soyuz spacecraft descends from the lineage that began with Gagarin's Vostok. First flown in 1967, it still carries crews today. Over half a century of flights, built on a design from the earliest days.
+* Visual prompt: Crisp photorealistic style, orbital view. A Soyuz spacecraft in space, a small round orbital module at the front, a bell-shaped descent module in the middle, and a cylindrical service module at the rear with two rectangular dark solar panels spread out like wings, all wrapped in gold-and-silver thermal foil. Behind it, the blue curve of the Earth and a dark starry sky, sunlight glinting on the foil. Reliable, proud mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, flags, or markings on the spacecraft, all surfaces blank.
+* Direction: Slow lateral track alongside the spacecraft, ending on the glowing solar panels. Steady, confident pacing. Dissolve from the previous scene. Mood of dependability and heritage.
 
-Money ran out. Later airships were damaged or destroyed. Each crash was another reason for the world to laugh.
+Scene #32
+* Script: His name even found a home in the sky. A huge crater on the far side of the Moon is named for Gagarin. So is an asteroid, drifting through the solar system. The first person to leave Earth now has a landmark... among the heavens themselves.
+* Visual prompt: Stark photorealistic style, lunar orbit view. A vast gray impact crater on the far side of the Moon with terraced walls, a rugged central peak and long black shadows, surrounded by smaller craters and pale gray dust. Pitch-black sky with sharp stars and no Earth in view. Strong side lighting, silent and majestic mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings anywhere, all surfaces natural lunar terrain.
+* Direction: Slow descent from high above the crater toward its central peak, with shadows creeping across the floor. Slow, reverent pacing. Dissolve from the previous scene. Mood of tribute and cosmic scale.
 
-Ferdinand was now in his late sixties. He kept building anyway.
+Scene #33
+* Script: Gagarin became the most famous person on the planet. He toured dozens of countries, met presidents and even a queen, and drew cheering crowds wherever he went. With one easy smile, he made space feel like a place anyone could dream about.
+* Visual prompt: Warm vintage 1961 color photograph style, city boulevard in bright sunshine. A black open-top 1960s limousine moving slowly down a flag-lined street, seen from behind, with a young man in a dark blue military uniform standing up in the back seat, seen only from behind. A cheering crowd fills both sides of the street far away, with flower petals and confetti in the air. Distant elegant buildings and bright flags. Joyful, celebratory mood. Faces: no faces visible, the man is seen from behind and the crowd is tiny and far. Hands: no hands visible, kept hidden by the car body and distance. No text: no words, letters, numbers, signs, logos, or writing on the flags, banners or car, all surfaces blank.
+* Direction: Slow dolly following the car from behind as petals drift past the lens. Warm, flowing pacing. Dissolve from the previous scene. Mood of joy and celebrity.
 
-[SCENE 7 - THE FIRE AT ECHTERDINGEN]
+Scene #34
+* Script: But he did not want to be just a hero in parades. He wanted to fly again. He went back to pilot training and studied to become an engineer. Then, on March twenty-seventh, 1968, a routine jet training flight ended in a crash. He was only thirty-four.
+* Visual prompt: Quiet, somber black-and-white photograph style, early morning mist, 1968. A silver two-seat MiG-15 trainer jet, a swept-wing early jet with a long glass canopy, parked on a lonely misty airfield. In the middle distance, a single pilot in a flight suit and helmet walking away from the camera along the runway, seen as a small silhouette from behind. Pale gray sky, soft fog over the grass, a few distant trees. Gentle, mournful mood. Faces: no faces visible, the pilot is seen from behind and far away. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, or markings on the jet, all surfaces blank.
+* Direction: Very slow pull back, letting the small figure walk further into the mist. Slow, sorrowful pacing. Dissolve from the previous scene. Mood of quiet loss and respect.
 
-In 1908, his airship LZ 4 completed a flight lasting many hours across Germany and Switzerland. Crowds filled the streets to cheer.
+Scene #35
+* Script: Yet his legacy kept flying. Every astronaut since has followed his trail. The launch pad he used sent crews into space for decades. And every April twelfth, people around the world celebrate Yuri's Night, and the day humanity first left home.
+* Visual prompt: Bright modern photorealistic style. The International Space Station, a long white truss with large golden-brown solar panel arrays and cylindrical modules, orbiting above the glowing blue Earth at sunrise. A warm golden sun flare along the edge of the planet, white clouds below, black sky above with a few stars. Hopeful, uplifting mood. Faces: no faces visible. Hands: no hands visible. No text: no words, letters, numbers, signs, logos, flags with writing, or markings on the station, all surfaces blank.
+* Direction: Slow drift around the station as the sunrise brightens, ending on a wide glow over the Earth. Slow, uplifting pacing. Dissolve from the previous scene. Mood of hope and continuity.
 
-Then, while it rested on the ground at Echterdingen, a storm tore it loose, and it burst into flames.
-
-Years of work, gone in seconds.
-
-It looked like the end.
-
-[SCENE 8 - A NATION STEPS IN]
-
-But the public had been watching.
-
-Across Germany, ordinary people sent donations. Schoolchildren gave their pocket money. Workers gave a day's pay.
-
-In just a few weeks, they raised millions of marks.
-
-The people who once laughed at him... were now funding his dream.
-
-[SCENE 9 - THE FIRST AIRLINE]
-
-With that money, Ferdinand built again.
-
-In 1909, his company launched the world's first airline, carrying paying passengers through the sky.
-
-Before the First World War, tens of thousands of people flew on his airships, without a single serious injury.
-
-The name zeppelin became the word for the airship itself.
-
-[SCENE 10 - THE LEGACY]
-
-Ferdinand von Zeppelin died in 1917, at the age of seventy-eight.
-
-He never saw his airships cross oceans, or circle the entire globe.
-
-But he proved something powerful. He started his greatest work when most people retire. He failed in front of the whole world. And each time, he stood back up.
-
-Every impossible thing is only impossible... until someone refuses to accept it.
-
-[END]
+Scene #36
+* Script: So what can we learn from Yuri Gagarin? He was not the tallest pilot. Not the most experienced. Not the most famous name in the program. He was simply the one willing to go first.
+* Visual prompt: Quiet cinematic style, deep blue twilight, 1961. A single small figure in a bright orange pressure suit and white helmet with no lettering stands alone on the empty Kazakh steppe, seen from behind and far away, looking up. Above, a huge sky full of stars and the glowing Milky Way. On the far horizon, the silhouette of a Vostok rocket on its pad, softly lit. Dry grass in the foreground, vast silence. Reflective, hopeful mood. Faces: no faces visible, the figure is seen from behind. Hands: no hands visible, arms hanging naturally at the sides, hidden by the suit. No text: no words, letters, numbers, signs, logos, or markings anywhere, all surfaces blank.
+* Direction: Start close on the small figure, then a slow, long pull back and up to reveal the vast starry sky and the distant rocket, ending with a slow fade to black. Slow, reflective pacing. Mood of humility, courage and quiet awe.

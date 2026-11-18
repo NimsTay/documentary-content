@@ -9,17 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 krea_api_key = os.environ["KREA_KEY"]
 
-generate_url = "https://api.krea.ai/generate/image/krea/krea-2/medium-turbo"
+generate_url = "https://api.krea.ai/generate/image/z-image/z-image"
 jobs_url = "https://api.krea.ai/jobs/"
 auth_headers = {"Authorization": f"Bearer {krea_api_key}"}
-
-# Every image is styled after these reference images
-style_references = [
-    {"url": "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794717294567-f1cfd15e-2005-488b-a147-07e1ed20b0e5-image.png", "strength": 0.5},
-    {"url": "https://gen.krea.ai/images/42316208-f03c-447e-ae3a-06f5b498480a.png", "strength": 0.5},
-    {"url": "https://gen.krea.ai/images/385dcfd6-0e51-4f19-9fae-eccea0be25b1.png", "strength": 0.5},
-    {"url": "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794883818757-6f79901c-f6a4-4c98-9bd4-15d3b7ea9942-inputSample_4.jpeg","strength": 0.75}
-]
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,25 +22,21 @@ os.makedirs(images_folder, exist_ok=True)
 
 # Split the storyboard into one block of text per scene
 storyboard_text = open(os.path.join(project_folder, "inputs", "narrative.txt")).read()
-scene_blocks = re.split(r"(?m)^scene #", storyboard_text)[1:]
+scene_blocks = re.split(r"(?mi)^scene #", storyboard_text)[1:]  # case insensitive so "Scene #1" and "scene #1" both work
 
 
-# Generates an image with Krea from the scene's script and direction text, returns the image bytes (or None)
+# Generates an image with the Krea z-image model from the scene text, returns the image bytes (or None)
 def generate_krea_image(scene_block):
-    # The prompt is the whole scene (title, script, direction) with a blank line between each part
-    scene_lines = [line for line in scene_block.splitlines() if line.strip() != ""]
-    prompt = "scene #" + "\n\n".join(scene_lines) + "\n"
+    # The prompt is the whole scene block exactly as written in the storyboard (title, script, image, motion)
+    prompt = "scene #" + scene_block.strip() + "\n"
 
     request_body = {
         "prompt": prompt,
+        "denoising_strength": 0.8,
+        "skip_prompt_expansion": False,
         "aspect_ratio": "16:9",
         "resolution": "1K",
-        "creativity": "medium",
-        "intensity": 25,
-        "complexity": 50,
-        "movement": 50,
-        "strength": 0.99,
-        "image_style_references": style_references,
+        # "seed": 1337,
     }
 
     job_id = requests.post(generate_url, headers=auth_headers, json=request_body).json()["job_id"]
@@ -56,6 +44,7 @@ def generate_krea_image(scene_block):
     # Check the job every few seconds until it is finished
     while True:
         job = requests.get(jobs_url + job_id, headers=auth_headers).json()
+        print(f"job {job_id} status: {job['status']}")
         if job["status"] in ["completed", "failed", "cancelled"]:
             break
         time.sleep(3)
@@ -115,8 +104,10 @@ def find_stock_image(scene_block):
 
 
 for scene_block in scene_blocks:
-    scene_number = scene_block.split(":")[0]
+    # The scene number is the first thing on the first line, e.g. "1" from "1" or "1: Title"
+    scene_number = re.match(r"\d+", scene_block).group()
 
+    print(f"starting scene {scene_number}")
     image_bytes = generate_krea_image(scene_block)
 
     if image_bytes is None:
