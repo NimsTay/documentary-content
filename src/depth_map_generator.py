@@ -5,11 +5,14 @@
 import glob
 import os
 import re
+import sys
 from PIL import Image
 from transformers import pipeline
 
-images_folder = "images"
-depth_maps_folder = "depth_maps"
+# The doc name is passed in as the first argument
+doc_name = sys.argv[1]
+images_folder = "images/" + doc_name
+depth_maps_folder = "depth_maps/" + doc_name
 
 os.makedirs(depth_maps_folder, exist_ok=True)
 

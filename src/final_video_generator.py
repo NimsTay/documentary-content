@@ -3,15 +3,18 @@
 import os
 import re
 import subprocess
+import sys
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-videos_folder = os.path.join(project_folder, "videos")
+# The doc name is passed in as the first argument
+doc_name = sys.argv[1]
+videos_folder = os.path.join(project_folder, "videos", doc_name)
 final_video_path = os.path.join(videos_folder, "final_video.mp4")
 clip_list_path = os.path.join(videos_folder, "clip_list.txt")
 
 # Find every clip_<number>.mp4 and sort by number so clip_2 comes before clip_10
-clip_names = [name for name in os.listdir(videos_folder) if re.fullmatch(r"clip_\d+\.mp4", name)]
+clip_names = [name for name in os.listdir(videos_folder) if re.fullmatch(r"scene_\d+\.mp4", name)]
 clip_names.sort(key=lambda name: int(re.findall(r"\d+", name)[0]))
 
 # ffmpeg's concat needs a text file listing the clips, one "file '<path>'" line per clip

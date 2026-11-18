@@ -3,7 +3,8 @@ numpy
 torch
 diffusers
 transformers
-acceleratepython-dotenv
+accelerate
 requests
 mlx-audio
 misaki
+pillow

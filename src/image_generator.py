@@ -1,6 +1,7 @@
-# Makes one Krea image per scene in inputs/storyboard.txt and saves them in images/
+# Makes one Krea image per scene in inputs/narrative.txt and saves them in images/
 import os
 import re
+import sys
 import time
 import requests
 from dotenv import load_dotenv
@@ -17,15 +18,18 @@ style_references = [
     {"url": "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794717294567-f1cfd15e-2005-488b-a147-07e1ed20b0e5-image.png", "strength": 0.5},
     {"url": "https://gen.krea.ai/images/42316208-f03c-447e-ae3a-06f5b498480a.png", "strength": 0.5},
     {"url": "https://gen.krea.ai/images/385dcfd6-0e51-4f19-9fae-eccea0be25b1.png", "strength": 0.5},
+    {"url": "https://app-uploads.krea.ai/88a836ae-ae5f-4231-a07f-5d314513fad1/1794883818757-6f79901c-f6a4-4c98-9bd4-15d3b7ea9942-inputSample_4.jpeg","strength": 0.75}
 ]
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-images_folder = os.path.join(project_folder, "images")
+# The doc name is passed in as the first argument
+doc_name = sys.argv[1]
+images_folder = os.path.join(project_folder, "images", doc_name)
 os.makedirs(images_folder, exist_ok=True)
 
 # Split the storyboard into one block of text per scene
-storyboard_text = open(os.path.join(project_folder, "inputs", "storyboard.txt")).read()
+storyboard_text = open(os.path.join(project_folder, "inputs", "narrative.txt")).read()
 scene_blocks = re.split(r"(?m)^scene #", storyboard_text)[1:]
 
 
@@ -120,4 +124,4 @@ for scene_block in scene_blocks:
         continue
 
     open(os.path.join(images_folder, f"scene_{scene_number}.png"), "wb").write(image_bytes)
-    print(f"saved images/scene_{scene_number}.png")
+    print(f"saved {images_folder}/scene_{scene_number}.png")
