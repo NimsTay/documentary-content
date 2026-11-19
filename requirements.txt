@@ -8,3 +8,4 @@ requests
 mlx-audio
 misaki
 pillow
+elevenlabs

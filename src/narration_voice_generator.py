@@ -1,11 +1,14 @@
 # TO RUN: python src/make_voice.py
-# Reads inputs/narrative.txt and makes one Kokoro narration clip per scene, saved as audio/audio_1.wav, audio/audio_2.wav, etc.
-import io
+# Reads inputs/narrative.txt and makes one ElevenLabs narration clip per scene, saved as audio/<doc_name>/scene_1.mp3, scene_2.mp3, etc.
 import os
 import re
 import sys
-from contextlib import redirect_stderr, redirect_stdout
-from mlx_audio.tts.generate import generate_audio
+from dotenv import load_dotenv
+from elevenlabs.client import ElevenLabs
+
+# The ElevenLabs key is read from the .env file, like the Krea key in image_generator.py
+load_dotenv()
+elevenlabs_client = ElevenLabs(api_key=os.environ["ELEVENLABS_KEY"])
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,26 +17,24 @@ doc_name = sys.argv[1]
 audio_folder = os.path.join(project_folder, "audio", doc_name)
 os.makedirs(audio_folder, exist_ok=True)
 
-# Kokoro settings - tweak these
-# voice_name = "af_nicole"  very realistic female but whispering
-# voice_name = "am_echo"  best sounding man with speed 1
-voice_name = "am_santa" #best sounding but a lil fruity 
-language_code = "a"  
-speaking_speed = 0.8  #do .8 for santa most realistic
+# ElevenLabs settings - tweak these
+model_name = "eleven_v4_turbo"
+# Jon - Warm & Grounded Storyteller (other Jon voices have different ids, copy the id from the ElevenLabs Voice Library)
+jon_voice_id = "JYUzXNeyCPmymMkfcicu"
 
 storyboard_text = open(os.path.join(project_folder, "inputs", "narrative.txt")).read()
 
 # Each scene starts with "scene #<number>:" and has a "* Script: <narration>" line (capital S or not)
-scene_numbers = re.findall(r"scene #(\d+):", storyboard_text)
+scene_numbers = re.findall(r"scene #(\d+)", storyboard_text, re.IGNORECASE)
 scene_scripts = re.findall(r"\* script: (.+)", storyboard_text, re.IGNORECASE)
 
 
 
 for scene_number, scene_script in zip(scene_numbers, scene_scripts):
     clip_name = "scene_" + scene_number
-    # Hide all the library's own output (pipeline, text, progress bars) while the clip is made
-    with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-        generate_audio(text=scene_script, model="prince-canuma/Kokoro-82M", voice=voice_name, lang_code=language_code, speed=speaking_speed, output_path=audio_folder, file_prefix=clip_name, audio_format="wav", join_audio=True, verbose=False)
+    # ElevenLabs sends the audio back in chunks, so join them and save as an mp3 file
+    audio_chunks = elevenlabs_client.text_to_speech.convert(text=scene_script, voice_id=jon_voice_id, model_id=model_name)
+    open(os.path.join(audio_folder, clip_name + ".mp3"), "wb").write(b"".join(audio_chunks))
     print("Completed scene", scene_number)
 
 print("Done! Clips saved in", audio_folder)

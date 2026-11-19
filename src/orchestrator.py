@@ -9,14 +9,17 @@ doc_name = sys.argv[1]
 steps = [
     # "image_generator.py",
     # "image_coords_extractor.py",
-    "depth_map_generator.py",
-    "narration_voice_generator.py",
+    # "depth_map_generator.py",
+    # "narration_voice_generator.py",
     "animation_parallax_generator.py",
     "final_video_generator.py",
 ]
 
 for step in steps:
+    print('==========================================')
     print("Running", step)
+    print('==========================================\n\n\n')
+    
     subprocess.run([sys.executable, "src/" + step, doc_name], check=True)
 
 print("Done! Final video is in videos/" + doc_name + "/final_video.mp4")

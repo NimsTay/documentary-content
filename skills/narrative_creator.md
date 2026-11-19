@@ -25,8 +25,11 @@ If key facts are missing, use well-known, verifiable facts. Never invent dates, 
 - Build a clear arc: hook, setup, struggle, turning point, payoff, lesson.
 - Write for the ear: short sentences, plain words, natural spoken rhythm, and pauses shown with "..."
 - Add exclamation marks on the important or dramatic beats so the AI voice gives them emphasis. Example: "And his name was Ferdinand von Zeppelin!"
-- Use exclamations on key reveals only (names, breakthroughs, turning points). Do not put one on every sentence, or the emphasis is lost.
+- Use exclamations on key reveals only (names, breakthroughs, turning points). Do not put one on every sentence, or the emphasis is lost. Use ellipses (…) to add pauses and weight
 - Keep the tone vivid and human, not like an encyclopedia.
+-use these vocal tags literally for sound modification: \[thoughtful\], \[inhales deeply\], \[short pause\]. for example here is a line that would work: "\[short pause\] Beneath you, a rocket packed with fuel. \[inhales deeply\] Above you... nothing but sky. \[thoughtful\] No human being has ever done what you are about to do."
+- dont use too many vocal tags though; only when needed and dont put one on each scene for example
+
 
 ## Scene format
 

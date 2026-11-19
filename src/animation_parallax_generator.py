@@ -1,4 +1,4 @@
-# Makes one video per image in images/ with a smooth zoom, gentle sway, god rays, parallax depth, vignette, film grain and a fade in.
+# Makes one video per image in images/ with a smooth zoom, gentle sway, parallax depth, vignette, film grain and a fade in.
 # Optional effects (soft glow pulse, drifting haze, floating dust) are commented out: search for "TRY" and uncomment the marked lines to turn them on.
 # Each video is as long as its audio clip: images/scene_1.png + audio/audio_1.wav -> videos/clip_1.mp4
 # Keeps your exact pixels, no AI. Run from the documentary-content folder:
@@ -40,13 +40,6 @@ focal_coords_file = images_folder + "/focal_coords.json"
 frames_per_second = 30
 fade_in_seconds = 2
 
-# God ray settings (ON): soft beams of warm light fanning out from the brightest spot in the picture (the sun glow)
-god_ray_strength = 0.35          # how bright the beams are (0 = invisible, try 0.2 subtle to 0.6 strong)
-god_ray_speed = 0.3             # how fast the beams slowly turn and shimmer
-god_ray_fade_distance = 2.5      # bigger = beams fade out closer to the source, smaller = beams reach further
-god_ray_resolution_scale = 0.25  # beams are made at this fraction of the image size (they are soft, so small is fine and fast)
-god_ray_color = (150, 215, 255)  # warm light as blue, green, red out of 255
-
 # Soft glow pulse settings (OFF until you uncomment its two sections): the bright areas swell and fade like light breathing
 glow_threshold = 120             # only pixels brighter than this glow (lower = more of the picture glows)
 glow_blur = 60                   # how wide and soft the glow is (bigger = the light spills further into the dark areas around it)
@@ -80,6 +73,7 @@ vignette_size = 0.3              # bigger = the dark area stays further out in t
 # Parallax depth settings: the bottom of the image (close) slides sideways more than the top (far)
 use_parallax = True
 parallax_pixels = 20             # how far the closest part slides, in pixels of the original image (try 30 for subtle, 100 for strong)
+parallax_vertical_pixels = 12    # how far the closest part slides up and down (0 = sideways only)
 parallax_speed = 0.5             # how fast it slides back and forth
 use_fake_gradient_depth = False  # when a scene has no depth map: True = use a top-to-bottom gradient (stretches the image), False = no parallax for that scene
 
@@ -177,47 +171,13 @@ def make_depth_map(image_height, image_width):
 
 
 def apply_parallax(image, depth_map, pixel_grid_x, pixel_grid_y, seconds_so_far):
-    # Slide each pixel sideways by an amount that depends on how close it is, so near parts move more than far parts
+    # Slide each pixel sideways and up and down by an amount that depends on how close it is, so near parts move more than far parts.
+    # Sine for sideways and cosine for up and down, so together the near parts trace a slow oval instead of a straight line.
     sideways_shift = np.sin(seconds_so_far * parallax_speed) * parallax_pixels
+    up_and_down_shift = np.cos(seconds_so_far * parallax_speed) * parallax_vertical_pixels
     shifted_grid_x = (pixel_grid_x - depth_map * sideways_shift).astype(np.float32)
-    return cv2.remap(image, shifted_grid_x, pixel_grid_y, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
-
-
-def find_brightest_point(image):
-    # Blur heavily so one bright speck cannot win, then find the brightest area (usually the sun glow). Returns x, y in pixels.
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred_gray_image = cv2.GaussianBlur(gray_image, (0, 0), 40)
-    brightest_x, brightest_y = cv2.minMaxLoc(blurred_gray_image)[3]
-    return brightest_x, brightest_y
-
-
-def make_god_ray_geometry(image):
-    # For every pixel (on a small grid): which direction it is from the light source, and how far away it is. Made once per clip.
-    image_height, image_width = image.shape[:2]
-    small_width = int(image_width * god_ray_resolution_scale)
-    small_height = int(image_height * god_ray_resolution_scale)
-    source_x, source_y = find_brightest_point(image)
-    grid_x, grid_y = np.meshgrid(np.arange(small_width), np.arange(small_height))
-    distance_x = grid_x - source_x * god_ray_resolution_scale
-    distance_y = grid_y - source_y * god_ray_resolution_scale
-    ray_angles = np.arctan2(distance_y, distance_x).astype(np.float32)
-    # Beams are strongest next to the source and fade with distance
-    distance_from_source = np.sqrt(distance_x ** 2 + distance_y ** 2) / small_width
-    ray_falloff = np.exp(-distance_from_source * god_ray_fade_distance).astype(np.float32)
-    return ray_angles, ray_falloff
-
-
-def make_god_rays(ray_angles, ray_falloff, seconds_so_far, image_height, image_width):
-    # Three waves of light and dark around the source, each turning at its own speed, so beams slowly drift and shimmer
-    slow_turn = seconds_so_far * god_ray_speed
-    wave_one = np.sin(ray_angles * 9 + slow_turn)
-    wave_two = np.sin(ray_angles * 17 - slow_turn * 1.3 + 2)
-    wave_three = np.sin(ray_angles * 31 + slow_turn * 0.7 + 4)
-    beams = (wave_one + 0.6 * wave_two + 0.4 * wave_three) / 2
-    # Keep only the bright parts of the waves and sharpen them, so there are clear beams with dark gaps between
-    beams = np.clip(beams, 0, 1) ** 2
-    rays = beams * ray_falloff
-    return cv2.resize(rays, (image_width, image_height), interpolation=cv2.INTER_LINEAR)
+    shifted_grid_y = (pixel_grid_y - depth_map * up_and_down_shift).astype(np.float32)
+    return cv2.remap(image, shifted_grid_x, shifted_grid_y, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
 
 
 def make_glow_layer(image):
@@ -302,9 +262,6 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
     output_height = 1080
     output_width = round(output_height * image_width / image_height / 2) * 2
 
-    # God rays (ON): work out the beam directions from the brightest spot in the picture, once per clip
-    ray_angles, ray_falloff = make_god_ray_geometry(image)
-
     # TRY soft glow pulse: uncomment the next line AND the "soft glow pulse" line in the frame loop below
     glow_layer = make_glow_layer(image)
 
@@ -312,7 +269,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
     haze_texture = make_haze_texture(image_height, image_width)
 
     # TRY floating dust / embers: uncomment the next line AND the "floating dust" line in the frame loop below
-    # dust_particles = make_dust_particles()
+    dust_particles = make_dust_particles()
 
     # Things the parallax and vignette effects need, made once per clip
     # Depth map: use the scene's depth map picture if there is one, otherwise the fake gradient (if allowed), otherwise no parallax
@@ -357,9 +314,8 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
         camera_y = camera_start[1] + (camera_end[1] - camera_start[1]) * camera_progress
         camera_x += np.sin(seconds_so_far * 0.8) * sway_amount * image_width
 
-        # God rays (ON): add warm beams of light fanning out from the brightest spot
-        god_rays = make_god_rays(ray_angles, ray_falloff, seconds_so_far, image_height, image_width)
-        lit_image = image.astype(np.float32) + god_rays[:, :, None] * np.float32(god_ray_color) * god_ray_strength
+        # Start every frame from the plain picture, then add the light effects on top of it
+        lit_image = image.astype(np.float32)
 
         # TRY soft glow pulse (also uncomment its line above in the setup)
         lit_image = add_glow_pulse(lit_image, glow_layer, seconds_so_far)
@@ -387,7 +343,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
         frame = cv2.warpAffine(lit_image, move_and_scale, (output_width, output_height), flags=cv2.INTER_CUBIC)
 
         # TRY floating dust / embers (also uncomment its line above in the setup)
-        # frame = add_floating_dust(frame, dust_particles, seconds_so_far)
+        frame = add_floating_dust(frame, dust_particles, seconds_so_far)
 
         # Fade in from black
         if fade_in:
