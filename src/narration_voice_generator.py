@@ -8,7 +8,7 @@ from elevenlabs.client import ElevenLabs
 
 # The ElevenLabs key is read from the .env file, like the Krea key in image_generator.py
 load_dotenv()
-elevenlabs_client = ElevenLabs(api_key=os.environ["ELEVENLABS_KEY"])
+elevenlabs_client = ElevenLabs(api_key=os.environ["ELEVEN_LABS_KEY"])
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

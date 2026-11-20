@@ -43,8 +43,8 @@ fade_in_seconds = 2
 # Soft glow pulse settings (OFF until you uncomment its two sections): the bright areas swell and fade like light breathing
 glow_threshold = 120             # only pixels brighter than this glow (lower = more of the picture glows)
 glow_blur = 60                   # how wide and soft the glow is (bigger = the light spills further into the dark areas around it)
-glow_strength = 3.0              # how bright the glow gets at its peak
-glow_pulses_per_second = 0.25     # 0.2 is one slow breath every 5 seconds
+glow_strength = 2.0              # how bright the glow gets at its peak
+glow_pulses_per_second = 0.15     # 0.2 is one slow breath every 5 seconds
 
 # Drifting haze settings (OFF until you uncomment its two sections): faint mist sliding sideways, thicker toward the bottom
 haze_strength = 0.3              # how thick the mist is (0 = none, 0.5 = heavy)
@@ -52,8 +52,8 @@ haze_speed_pixels = 20           # how many pixels per second it drifts
 haze_color = (225, 225, 230)     # blue, green, red out of 255
 
 # Floating dust / embers settings (OFF until you uncomment its two sections): small soft dots drifting upward
-dust_count = 80                  # how many dots
-dust_strength = 0.8              # how bright the dots are
+dust_count = 60                  # how many dots
+dust_strength = 0.4              # how bright the dots are
 dust_rise_speed = 0.02           # how fast they rise, as a fraction of the screen height per second
 dust_color = (190, 225, 255)     # blue, green, red out of 255 (warm for embers, try (255, 255, 255) for white dust)
 

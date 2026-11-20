@@ -1,1 +1,0 @@
-Here are suggestions per scene. The file names marked “found” came up in my earlier Commons searches. The rest are things to look for, and I haven’t checked that they exist.
