@@ -11,3 +11,8 @@
 # audio generator
 - *python make_voice.py*
 - goes through all the scenes in the storyboard and pulls out the *Script:* key for each and converts to audio
+
+## qutting running processes     
+pkill -9 -f ffmpeg -y -loglevel error -f rawvideo
+
+pkill -9 -f "src/"

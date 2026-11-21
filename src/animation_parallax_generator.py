@@ -14,6 +14,8 @@ import numpy as np
 
 # The doc name is passed in as the first argument
 doc_name = sys.argv[1]
+# Only the scenes listed after the first two arguments (e.g. scene_3) are made here, the others are animated with Krea instead
+parallax_scenes = sys.argv[3:]
 images_folder = "images/" + doc_name
 audio_folder = "audio/" + doc_name
 videos_folder = "videos/" + doc_name
@@ -37,12 +39,12 @@ background_darken = 0.3          # how much the background dims while the photo 
 motion_text = "slowly zoom in, fade in from black"
 focal_coords_file = images_folder + "/focal_coords.json"
 
-frames_per_second = 30
+frames_per_second = 24  # must match the Krea clips (24), clips with different frame rates break the final join
 fade_in_seconds = 2
 
 # Soft glow pulse settings (OFF until you uncomment its two sections): the bright areas swell and fade like light breathing
 glow_threshold = 120             # only pixels brighter than this glow (lower = more of the picture glows)
-glow_blur = 60                   # how wide and soft the glow is (bigger = the light spills further into the dark areas around it)
+glow_blur = 90                   # how wide and soft the glow is (bigger = the light spills further into the dark areas around it)
 glow_strength = 2.0              # how bright the glow gets at its peak
 glow_pulses_per_second = 0.15     # 0.2 is one slow breath every 5 seconds
 
@@ -72,9 +74,9 @@ vignette_size = 0.3              # bigger = the dark area stays further out in t
 
 # Parallax depth settings: the bottom of the image (close) slides sideways more than the top (far)
 use_parallax = True
-parallax_pixels = 20             # how far the closest part slides, in pixels of the original image (try 30 for subtle, 100 for strong)
-parallax_vertical_pixels = 12    # how far the closest part slides up and down (0 = sideways only)
-parallax_speed = 0.5             # how fast it slides back and forth
+parallax_pixels = 45           # how far the closest part slides, in pixels of the original image (try 30 for subtle, 100 for strong)
+parallax_vertical_pixels = 21    # how far the closest part slides up and down (0 = sideways only)
+parallax_speed = 0.6             # how fast it slides back and forth
 use_fake_gradient_depth = False  # when a scene has no depth map: True = use a top-to-bottom gradient (stretches the image), False = no parallax for that scene
 
 # Read the motion words from the text
@@ -158,8 +160,8 @@ def load_depth_map(depth_map_path, image_height, image_width):
     depth_picture = cv2.imread(depth_map_path, cv2.IMREAD_GRAYSCALE)
     depth_picture = cv2.resize(depth_picture, (image_width, image_height))
     depth_map = depth_picture.astype(np.float32) / 255
-    # Soften the edges a little so the layers do not tear apart when they slide
-    return cv2.GaussianBlur(depth_map, (0, 0), 5)
+    # Soften the edges a little (blur is sized for 4K images) so the layers do not tear apart when they slide
+    return cv2.GaussianBlur(depth_map, (0, 0), 8)
 
 
 def make_depth_map(image_height, image_width):
@@ -266,7 +268,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
     glow_layer = make_glow_layer(image)
 
     # TRY drifting haze: uncomment the next line AND the "drifting haze" line in the frame loop below
-    haze_texture = make_haze_texture(image_height, image_width)
+    # haze_texture = make_haze_texture(image_height, image_width)
 
     # TRY floating dust / embers: uncomment the next line AND the "floating dust" line in the frame loop below
     dust_particles = make_dust_particles()
@@ -321,7 +323,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
         lit_image = add_glow_pulse(lit_image, glow_layer, seconds_so_far)
 
         # TRY drifting haze (also uncomment its line above in the setup)
-        lit_image = add_drifting_haze(lit_image, haze_texture, seconds_so_far)
+        # lit_image = add_drifting_haze(lit_image, haze_texture, seconds_so_far)
 
         # Parallax: slide the close parts of the image more than the far parts
         if use_parallax and depth_map is not None:
@@ -380,6 +382,8 @@ image_paths = sorted(glob.glob(images_folder + "/scene_*.png"), key=lambda path:
 
 for image_path in image_paths:
     scene_number = re.findall(r"\d+", image_path)[-1]
+    if "scene_" + scene_number not in parallax_scenes:
+        continue
     audio_files = glob.glob(audio_folder + "/scene_" + scene_number + ".*")
     if not audio_files:
         print("Skipping scene", scene_number, "- no scene_" + scene_number + " in", audio_folder + "/")

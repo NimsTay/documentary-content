@@ -11,7 +11,7 @@ from transformers import pipeline
 
 # The doc name is passed in as the first argument
 doc_name = sys.argv[1]
-images_folder = "images/" + doc_name
+images_folder = "images/" + doc_name  # depth maps are made from the 4K images
 depth_maps_folder = "depth_maps/" + doc_name
 
 os.makedirs(depth_maps_folder, exist_ok=True)

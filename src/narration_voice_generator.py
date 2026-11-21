@@ -1,5 +1,5 @@
 # TO RUN: python src/make_voice.py
-# Reads inputs/narrative.txt and makes one ElevenLabs narration clip per scene, saved as audio/<doc_name>/scene_1.mp3, scene_2.mp3, etc.
+# Reads the narrative file (second argument, e.g. inputs/<doc_name>/narrative.txt) and makes one ElevenLabs narration clip per scene, saved as audio/<doc_name>/scene_1.mp3, scene_2.mp3, etc.
 import os
 import re
 import sys
@@ -14,6 +14,7 @@ elevenlabs_client = ElevenLabs(api_key=os.environ["ELEVEN_LABS_KEY"])
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # The doc name is passed in as the first argument
 doc_name = sys.argv[1]
+narrative_path = sys.argv[2]
 audio_folder = os.path.join(project_folder, "audio", doc_name)
 os.makedirs(audio_folder, exist_ok=True)
 
@@ -22,7 +23,7 @@ model_name = "eleven_v4_turbo"
 # Jon - Warm & Grounded Storyteller (other Jon voices have different ids, copy the id from the ElevenLabs Voice Library)
 jon_voice_id = "JYUzXNeyCPmymMkfcicu"
 
-storyboard_text = open(os.path.join(project_folder, "inputs", "narrative.txt")).read()
+storyboard_text = open(narrative_path).read()
 
 # Each scene starts with "scene #<number>:" and has a "* Script: <narration>" line (capital S or not)
 scene_numbers = re.findall(r"scene #(\d+)", storyboard_text, re.IGNORECASE)

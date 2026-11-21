@@ -1,4 +1,4 @@
-# Makes one Krea image per scene in inputs/narrative.txt and saves them in images/
+# Makes one Krea Seedream 5 Lite 4K image per scene in the narrative file and saves them in images/
 import os
 import re
 import sys
@@ -9,34 +9,32 @@ from dotenv import load_dotenv
 load_dotenv()
 krea_api_key = os.environ["KREA_KEY"]
 
-generate_url = "https://api.krea.ai/generate/image/z-image/z-image"
+generate_url = "https://api.krea.ai/generate/image/bytedance/seedream-5-lite"
 jobs_url = "https://api.krea.ai/jobs/"
 auth_headers = {"Authorization": f"Bearer {krea_api_key}"}
 
 # Folders are found relative to this file so the script works from any directory
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# The doc name is passed in as the first argument
+# The doc name is passed in as the first argument, the narrative file path as the second
 doc_name = sys.argv[1]
+narrative_path = sys.argv[2]
 images_folder = os.path.join(project_folder, "images", doc_name)
 os.makedirs(images_folder, exist_ok=True)
 
 # Split the storyboard into one block of text per scene
-storyboard_text = open(os.path.join(project_folder, "inputs", "narrative.txt")).read()
+storyboard_text = open(narrative_path).read()
 scene_blocks = re.split(r"(?mi)^scene #", storyboard_text)[1:]  # case insensitive so "Scene #1" and "scene #1" both work
 
 
-# Generates an image with the Krea z-image model from the scene text, returns the image bytes (or None)
+# Generates an image with the Krea Seedream model from the scene text, returns the image bytes (or None)
 def generate_krea_image(scene_block):
     # The prompt is the whole scene block exactly as written in the storyboard (title, script, image, motion)
     prompt = "scene #" + scene_block.strip() + "\n"
 
     request_body = {
         "prompt": prompt,
-        "denoising_strength": 0.8,
-        "skip_prompt_expansion": False,
-        "aspect_ratio": "16:9",
-        "resolution": "1K",
-        # "seed": 1337,
+        "width": 3840,
+        "height": 2160,
     }
 
     job_id = requests.post(generate_url, headers=auth_headers, json=request_body).json()["job_id"]
@@ -44,7 +42,6 @@ def generate_krea_image(scene_block):
     # Check the job every few seconds until it is finished
     while True:
         job = requests.get(jobs_url + job_id, headers=auth_headers).json()
-        print(f"job {job_id} status: {job['status']}")
         if job["status"] in ["completed", "failed", "cancelled"]:
             break
         time.sleep(3)

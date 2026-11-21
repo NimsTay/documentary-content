@@ -6,19 +6,20 @@ import json
 import re
 import sys
 
-# The doc name is passed in as the first argument; images are read from images/<doc>
+# The doc name is passed in as the first argument; focal_coords.json is saved in images/<doc>
 project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FOLDER = os.path.join(project_folder, "images", sys.argv[1])
+IMAGES_FOLDER = os.path.join(project_folder, "images", sys.argv[1])
+
 
 root = tk.Tk()
 root.title("Image Annotator")
 
 files = sorted(
-    [f for f in os.listdir(FOLDER) if re.match(r"scene_\d+\.(png|jpg|jpeg)$", f)],
+    [f for f in os.listdir(IMAGES_FOLDER) if re.match(r"scene_\d+\.(png|jpg|jpeg)$", f)],
     key=lambda f: int(re.search(r"scene_(\d+)", f).group(1))
 )
 
-files = [os.path.join(FOLDER, f) for f in files]
+files = [os.path.join(IMAGES_FOLDER, f) for f in files]
 
 index = 0
 data = {}
@@ -67,7 +68,7 @@ def next_image():
     name = os.path.basename(files[index].replace('.png', '').replace('.jpg', '').replace('.jpeg', ''))
     data[name] = {"x": selected[0], "y": selected[1]}
 
-    with open(os.path.join(FOLDER, "focal_coords.json"), "w") as f:
+    with open(os.path.join(IMAGES_FOLDER, "focal_coords.json"), "w") as f:
         json.dump(data, f, indent=4)
 
     index += 1

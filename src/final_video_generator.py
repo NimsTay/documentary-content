@@ -1,5 +1,6 @@
-# TO RUN: python src/final_video.py
-# Joins videos/clip_1.mp4, clip_2.mp4, ... in order into one big video: videos/final_video.mp4
+# TO RUN: python src/final_video_generator.py <doc_name>
+# Joins videos/<doc_name>/scene_1.mp4, scene_2.mp4, ... in order into one big video: videos/<doc_name>/final_video.mp4
+# The clips are just copied back to back (no re-encoding), so every clip keeps its own timing. All clips must have the same frame rate (24).
 import os
 import re
 import subprocess
@@ -13,7 +14,7 @@ videos_folder = os.path.join(project_folder, "videos", doc_name)
 final_video_path = os.path.join(videos_folder, "final_video.mp4")
 clip_list_path = os.path.join(videos_folder, "clip_list.txt")
 
-# Find every clip_<number>.mp4 and sort by number so clip_2 comes before clip_10
+# Find every scene_<number>.mp4 and sort by number so scene_2 comes before scene_10
 clip_names = [name for name in os.listdir(videos_folder) if re.fullmatch(r"scene_\d+\.mp4", name)]
 clip_names.sort(key=lambda name: int(re.findall(r"\d+", name)[0]))
 
@@ -22,8 +23,8 @@ with open(clip_list_path, "w") as clip_list_file:
     for clip_name in clip_names:
         clip_list_file.write("file '" + os.path.join(videos_folder, clip_name) + "'\n")
 
-# Join the clips back to back (re-encoded so the joins are clean)
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", clip_list_path, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", final_video_path], check=True)
+# Append the clips back to back, copying them as they are
+subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", clip_list_path, "-c", "copy", final_video_path], check=True)
 
 # The list file was only needed for ffmpeg
 os.remove(clip_list_path)
