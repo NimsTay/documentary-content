@@ -1,0 +1,7 @@
+{
+  "transition": "depth",
+  "colors": { "background": "#07111A", "text": "#E8F4FA", "accent": "#38C6D9" },
+  "fonts": { "title": "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf", "caption": "/System/Library/Fonts/Supplemental/Arial Bold.ttf" },
+  "scene_push_in": 0.03,
+  "music": { "ostinato": [49.0, 49.0, 58.3, 49.0, 73.4, 65.4, 58.3, 55.0] }
+}

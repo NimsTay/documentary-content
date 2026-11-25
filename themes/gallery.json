@@ -1,0 +1,7 @@
+{
+  "transition": "gallery",
+  "colors": { "background": "#121014", "text": "#F4EFE6", "accent": "#D9A441" },
+  "fonts": { "title": "/System/Library/Fonts/Supplemental/Georgia Bold.ttf", "caption": "/System/Library/Fonts/Supplemental/Georgia Bold.ttf" },
+  "scene_push_in": 0.03,
+  "music": { "ostinato": [55.0, 55.0, 65.4, 55.0, 82.4, 55.0, 73.4, 65.4] }
+}

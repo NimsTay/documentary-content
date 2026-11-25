@@ -110,7 +110,7 @@ Scene #19
 
 Script: She wouldn't be alone. A partner named Jason. Two criminals, a modern-day Bonnie and Clyde, on the run through a world that felt more alive than anything before it. Crowds. Cars. Chaos. Every corner buzzing with life.
 Visual prompt: Cinematic sunset photograph style, a vintage-style muscle car speeding away along a coastal highway, seen from behind with two silhouetted figures inside, only dark shapes through the rear window. Foreground: road and heat haze. Midground: the car with kicked-up dust. Background: palm trees, sea, and a pink sky. Fast, romantic, dangerous mood, low angle. Faces: none visible, figures are only silhouettes. Hands: not visible. No text, letters, numbers, logos, signs or watermarks anywhere; license plate is blank.
-Direction: Cut in. Fast tracking push following the car, then a quick whip-pan to the sunset. Pacing quick and thrilling. Ends with the car vanishing into the sun.
+Direction: Cut in. Fast push following the car with a drift to a hard fast right turn, then a quick whip-pan to the sunset. Pacing quick and thrilling.
 
 Scene #20
 
@@ -168,6 +168,6 @@ Direction: Fade in. Slow push-in over the figure's shoulder to the glowing city.
 
 Scene #29
 
-Script: So what can we learn from the 13-year wait for GTA VI? Rockstar was not the fastest. Not the loudest. Not the cheapest. It was simply the most patient.
+Script: Thirteen years. That's how long Rockstar has kept GTA VI in development while the rest of the industry continued its yearly release cycles. And somehow, the anticipation only grew. GTA V carried the franchise for over a decade, and people were still counting down the days for what's next. There's a lesson in that kind of patience. When you spend years refining something and refuse to compromise on the details, people notice. Eventually, the work speaks for itself, and the audience is willing to wait.
 Visual prompt: Quiet cinematic photograph style, a single glowing sunrise over a calm sea seen from a pier, a tiny silhouetted figure at the pier's end facing the horizon with a long soft shadow. Foreground: wooden pier planks. Midground: the silhouetted figure far away. Background: a huge golden sun rising over the water. Peaceful, reflective mood. Faces: none visible, figure is a distant silhouette from behind. Hands: not visible. No text, letters, numbers, logos, signs or watermarks anywhere.
 Direction: Fade in. Very slow pull-back from the figure to reveal the vast sea and sky. Pacing slow and reflective. Ends with a long fade to black.

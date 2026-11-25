@@ -1,5 +1,5 @@
 # TO RUN: python src/make_voice.py
-# Reads the narrative file (second argument, e.g. inputs/<doc_name>/narrative.txt) and makes one ElevenLabs narration clip per scene, saved as audio/<doc_name>/scene_1.mp3, scene_2.mp3, etc.
+# Reads the narrative file (second argument, e.g. inputs/<doc_name>/narrative.txt) and makes one ElevenLabs narration clip per scene, saved as audio/<doc_name>/scene_1.mp3, scene_2.mp3, etc. Existing clips are skipped.
 import os
 import re
 import sys
@@ -27,15 +27,21 @@ storyboard_text = open(narrative_path).read()
 
 # Each scene starts with "scene #<number>:" and has a "* Script: <narration>" line (capital S or not)
 scene_numbers = re.findall(r"scene #(\d+)", storyboard_text, re.IGNORECASE)
-scene_scripts = re.findall(r"\* script: (.+)", storyboard_text, re.IGNORECASE)
+# The "* " bullet is optional because pasted storyboards sometimes lose it
+scene_scripts = re.findall(r"^(?:\* )?script: (.+)", storyboard_text, re.IGNORECASE | re.MULTILINE)
 
 
 
 for scene_number, scene_script in zip(scene_numbers, scene_scripts):
     clip_name = "scene_" + scene_number
+    clip_path = os.path.join(audio_folder, clip_name + ".mp3")
+    # Skip scenes that already have a clip, so only missing ones are generated (delete a clip to remake it)
+    if os.path.exists(clip_path):
+        print("Skipping scene", scene_number, "(audio already exists)")
+        continue
     # ElevenLabs sends the audio back in chunks, so join them and save as an mp3 file
     audio_chunks = elevenlabs_client.text_to_speech.convert(text=scene_script, voice_id=jon_voice_id, model_id=model_name)
-    open(os.path.join(audio_folder, clip_name + ".mp3"), "wb").write(b"".join(audio_chunks))
+    open(clip_path, "wb").write(b"".join(audio_chunks))
     print("Completed scene", scene_number)
 
 print("Done! Clips saved in", audio_folder)

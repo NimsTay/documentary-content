@@ -11,6 +11,7 @@ import subprocess
 import sys
 import cv2
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 
 # The doc name is passed in as the first argument
 doc_name = sys.argv[1]
@@ -19,7 +20,9 @@ parallax_scenes = sys.argv[3:]
 images_folder = "images/" + doc_name
 audio_folder = "audio/" + doc_name
 videos_folder = "videos/" + doc_name
-os.makedirs(videos_folder, exist_ok=True)
+# Finished clips (animation + narration) go here, scenes already in this folder are not made again
+clips_folder = videos_folder + "/animated_narrated_clips"
+os.makedirs(clips_folder, exist_ok=True)
 real_photos_folder = images_folder + "/real_photos"  # put real photos here named like scene_3.jpg (or .png / .jpeg) to overlay them on scene 3
 depth_maps_folder = "depth_maps/" + doc_name    # put grayscale depth maps here named like scene_3.png (white = close, black = far) to get parallax on scene 3
 
@@ -34,6 +37,9 @@ photo_border_pixels = 12         # white border around the photo
 shadow_margin_pixels = 30        # how far the soft shadow spreads around the photo
 shadow_strength = 0.5            # 0 = no shadow, 1 = fully black shadow
 background_darken = 0.3          # how much the background dims while the photo is showing
+caption_font_file = "/System/Library/Fonts/Helvetica.ttc"  # font used for the caption under the photo
+caption_font_size = 28           # caption text size in pixels
+caption_padding_pixels = 14      # empty space around the caption text
 
 # The camera move for every clip. The zoom ends on each scene's x and y pixel from focal_coords.json
 motion_text = "slowly zoom in, fade in from black"
@@ -104,14 +110,59 @@ def get_audio_seconds(audio_path):
     return float(result.stdout)
 
 
-def load_framed_photo(photo_path, output_width, output_height):
-    # Load the real photo, shrink it to fit the video and add a white border
+def get_caption(suggestions_path, scene_number):
+    # Find the "## Scene N" section in real_images_suggestions.md, then return the text of its first "caption" line (or None)
+    if not os.path.exists(suggestions_path):
+        return None
+    suggestions_text = open(suggestions_path).read()
+    scene_sections = re.split(r"^## Scene ", suggestions_text, flags=re.MULTILINE)
+    for scene_section in scene_sections:
+        if re.match(scene_number + r"\b", scene_section):
+            caption_match = re.search(r'"caption":\s*"(.*?)"\s*$', scene_section, flags=re.MULTILINE)
+            return caption_match.group(1) if caption_match else None
+    return None
+
+
+def add_caption_strip(framed_photo, caption):
+    # Add a white strip with the caption text under the photo (text is wrapped onto several lines to fit the photo width)
+    font = ImageFont.truetype(caption_font_file, caption_font_size)
+    max_text_width = framed_photo.shape[1] - 2 * caption_padding_pixels
+    lines = []
+    current_line = ""
+    for word in caption.split():
+        test_line = (current_line + " " + word).strip()
+        if font.getlength(test_line) > max_text_width and current_line:
+            lines.append(current_line)
+            current_line = word
+        else:
+            current_line = test_line
+    lines.append(current_line)
+
+    # Draw the lines in black on a white strip as wide as the photo
+    line_height = caption_font_size + 8
+    strip_height = line_height * len(lines) + 2 * caption_padding_pixels
+    strip = Image.new("RGB", (framed_photo.shape[1], strip_height), (255, 255, 255))
+    pen = ImageDraw.Draw(strip)
+    for line_number, line in enumerate(lines):
+        line_x = (framed_photo.shape[1] - font.getlength(line)) / 2
+        pen.text((line_x, caption_padding_pixels + line_number * line_height), line, font=font, fill=(0, 0, 0))
+
+    # PIL uses RGB and OpenCV uses BGR, so flip the colors before stacking the strip under the photo
+    strip_bgr = np.array(strip)[:, :, ::-1]
+    return np.vstack([framed_photo, strip_bgr])
+
+
+def load_framed_photo(photo_path, output_width, output_height, caption=None):
+    # Load the real photo, shrink it to fit the video, add a white border and the caption strip (if there is a caption)
     photo = cv2.imread(photo_path)
     photo_height, photo_width = photo.shape[:2]
     shrink = min(output_width * photo_width_fraction / photo_width, output_height * 0.8 / photo_height)
     photo = cv2.resize(photo, (round(photo_width * shrink), round(photo_height * shrink)), interpolation=cv2.INTER_AREA)
     white = (255, 255, 255)
-    return cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
+    framed_photo = cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
+    if caption:
+        framed_photo = add_caption_strip(framed_photo, caption)
+    return framed_photo
 
 
 def overlay_photo(frame, framed_photo, photo_zoom, photo_alpha):
@@ -241,7 +292,7 @@ def add_floating_dust(frame, dust_particles, seconds_so_far):
     return frame + dust_layer[:, :, None] * np.float32(dust_color) * dust_strength
 
 
-def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=None, depth_map_path=None):
+def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=None, depth_map_path=None, caption=None):
     video_seconds = get_audio_seconds(audio_path)
 
     image = cv2.imread(image_path)
@@ -287,7 +338,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
     # Load the real photo once if this scene has one
     framed_photo = None
     if photo_path:
-        framed_photo = load_framed_photo(photo_path, output_width, output_height)
+        framed_photo = load_framed_photo(photo_path, output_width, output_height, caption)
     photo_end_seconds = photo_start_seconds + video_seconds * photo_screen_fraction
 
     # ffmpeg reads the raw frames from us, adds the audio file and writes the mp4
@@ -388,16 +439,22 @@ for image_path in image_paths:
     if not audio_files:
         print("Skipping scene", scene_number, "- no scene_" + scene_number + " in", audio_folder + "/")
         continue
-    clip_path = videos_folder + "/scene_" + scene_number + ".mp4"
+    clip_path = clips_folder + "/scene_" + scene_number + ".mp4"
+    # Skip scenes whose finished video is already in the animated_narrated_clips folder
+    if os.path.exists(clip_path):
+        print("Skipping scene", scene_number, "- video already exists")
+        continue
     # Use a real photo for this scene if one exists, e.g. real_photos/scene_3.jpg
     photo_files = glob.glob(real_photos_folder + "/scene_" + scene_number + ".*")
     photo_path = photo_files[0] if photo_files else None
     # Use a depth map for this scene if one exists, e.g. depth_maps/scene_3.png
     depth_map_files = glob.glob(depth_maps_folder + "/scene_" + scene_number + ".*")
     depth_map_path = depth_map_files[0] if depth_map_files else None
+    # The caption for this scene's real photo, from real_images_suggestions.md
+    caption = get_caption(images_folder + "/real_images_suggestions.md", scene_number)
     # The point this scene zooms in on
     scene_focal_point = focal_coords["scene_" + scene_number]
     print("Making", clip_path, "zooming to", scene_focal_point["x"], scene_focal_point["y"], "with real photo" if photo_path else "", "with depth map" if depth_map_path else "")
-    make_clip(image_path, audio_files[0], clip_path, scene_focal_point["x"], scene_focal_point["y"], photo_path, depth_map_path)
+    make_clip(image_path, audio_files[0], clip_path, scene_focal_point["x"], scene_focal_point["y"], photo_path, depth_map_path, caption)
 
-print("Done! Clips saved in", videos_folder + "/")
+print("Done! Clips saved in", clips_folder + "/")

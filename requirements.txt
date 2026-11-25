@@ -9,3 +9,5 @@ mlx-audio
 misaki
 pillow
 elevenlabs
+faster-whisper
+

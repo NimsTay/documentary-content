@@ -1,0 +1,7 @@
+{
+  "transition": "blocks",
+  "colors": { "background": "#101010", "text": "#FFFFFF", "accent": "#FFD400" },
+  "fonts": { "title": "/System/Library/Fonts/Supplemental/Impact.ttf", "caption": "/System/Library/Fonts/Supplemental/Arial Black.ttf" },
+  "scene_push_in": 0.03,
+  "music": { "ostinato": [73.4, 73.4, 110.0, 73.4, 87.3, 73.4, 98.0, 110.0] }
+}

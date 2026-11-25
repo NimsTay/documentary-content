@@ -7,7 +7,7 @@
 #      - audio longer than 14 seconds: the video eases smoothly to a stop on its last frame at 14 seconds, and that frame is held while the audio keeps going
 #   4. if the scene has a real photo (images/<doc_name>/real_photos/scene_N.*) it fades in over the video, stays for half the audio,
 #      and dissolves out (same look as animation_parallax_generator.py)
-# The finished clip (with the audio) is saved as videos/<doc_name>/scene_N.mp4
+# The finished clip (with the audio) is saved as videos/<doc_name>/animated_narrated_clips/scene_N.mp4
 import glob
 import os
 import re
@@ -16,6 +16,7 @@ import sys
 import time
 import cv2
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 import requests
 from dotenv import load_dotenv
 load_dotenv()
@@ -45,6 +46,9 @@ photo_border_pixels = 12         # white border around the photo
 shadow_margin_pixels = 30        # how far the soft shadow spreads around the photo
 shadow_strength = 0.5            # 0 = no shadow, 1 = fully black shadow
 background_darken = 0.3          # how much the background dims while the photo is showing
+caption_font_file = "/System/Library/Fonts/Helvetica.ttc"  # font used for the caption under the photo
+caption_font_size = 28           # caption text size in pixels
+caption_padding_pixels = 14      # empty space around the caption text
 
 # The doc name and narrative path are passed in by the orchestrator
 doc_name = sys.argv[1]
@@ -60,21 +64,37 @@ audio_folder = os.path.join(CONTENT_ROOT, "audio", doc_name)
 videos_folder = os.path.join(CONTENT_ROOT, "videos", doc_name)
 raw_videos_folder = os.path.join(videos_folder, "raw")
 os.makedirs(raw_videos_folder, exist_ok=True)
+# Finished clips (animation + narration) go here, scenes already in this folder are not made again
+clips_folder = os.path.join(videos_folder, "animated_narrated_clips")
+os.makedirs(clips_folder, exist_ok=True)
 
 
 def get_direction_prompt(narrative_path, scene_number):
-    # Find the "Scene #N" header, then return the text of the next "* Direction:" line
+    # Find the "Scene #N" header, then return the text of the next Direction line
+    # The line can be written as "* Direction: ..." or "Direction: ..." depending on the narrative file
     found_scene = False
     with open(narrative_path) as narrative_file:
         for line in narrative_file:
-            if line.strip().lower() == f"scene #{scene_number}":
+            line_without_bullet = line.strip().lstrip("* ").strip()
+            if line_without_bullet.lower() == f"scene #{scene_number}":
                 found_scene = True
-            elif found_scene and line.startswith("* Direction:"):
-                return line.replace("* Direction:", "").strip()
+            elif found_scene and line_without_bullet.startswith("Direction:"):
+                return line_without_bullet.replace("Direction:", "").strip()
 
 
 def upload_image_to_krea(image_path):
     # Upload the local file so Krea gives us a URL we can use as the start image
+    # Retry a few times because the connection to Krea sometimes drops with an SSL error
+    for attempt in range(3):
+        try:
+            with open(image_path, "rb") as image_file:
+                response = requests.post(f"{API_BASE}/assets", headers=HEADERS, files={"file": (os.path.basename(image_path), image_file, "image/png")})
+            return response.json()["image_url"]
+        except requests.exceptions.SSLError:
+            print("Upload failed with an SSL error, retrying (attempt", attempt + 1, "of 3)")
+            time.sleep(5)
+
+    # Final attempt without a try/except so the real error shows if it still fails
     with open(image_path, "rb") as image_file:
         response = requests.post(f"{API_BASE}/assets", headers=HEADERS, files={"file": (os.path.basename(image_path), image_file, "image/png")})
     return response.json()["image_url"]
@@ -84,6 +104,8 @@ def start_video_job(start_image_url, prompt, video_seconds):
     # Ask Krea to animate the image with Seedance 1.0 Pro Fast
     body = {"prompt": prompt, "start_image": start_image_url, "aspect_ratio": "16:9", "resolution": VIDEO_RESOLUTION, "duration": video_seconds}
     response = requests.post(VIDEO_MODEL_ENDPOINT, headers=HEADERS, json=body)
+    # Show what Krea answered so a missing job_id has a visible reason
+    print("Krea start job response:", response.status_code, response.text)
     return response.json()["job_id"]
 
 
@@ -110,14 +132,59 @@ def get_media_seconds(media_path):
     return float(result.stdout.strip())
 
 
-def load_framed_photo(photo_path, output_width, output_height):
-    # Load the real photo, shrink it to fit the video and add a white border
+def get_caption(suggestions_path, scene_number):
+    # Find the "## Scene N" section in real_images_suggestions.md, then return the text of its first "caption" line (or None)
+    if not os.path.exists(suggestions_path):
+        return None
+    suggestions_text = open(suggestions_path).read()
+    scene_sections = re.split(r"^## Scene ", suggestions_text, flags=re.MULTILINE)
+    for scene_section in scene_sections:
+        if re.match(scene_number + r"\b", scene_section):
+            caption_match = re.search(r'"caption":\s*"(.*?)"\s*$', scene_section, flags=re.MULTILINE)
+            return caption_match.group(1) if caption_match else None
+    return None
+
+
+def add_caption_strip(framed_photo, caption):
+    # Add a white strip with the caption text under the photo (text is wrapped onto several lines to fit the photo width)
+    font = ImageFont.truetype(caption_font_file, caption_font_size)
+    max_text_width = framed_photo.shape[1] - 2 * caption_padding_pixels
+    lines = []
+    current_line = ""
+    for word in caption.split():
+        test_line = (current_line + " " + word).strip()
+        if font.getlength(test_line) > max_text_width and current_line:
+            lines.append(current_line)
+            current_line = word
+        else:
+            current_line = test_line
+    lines.append(current_line)
+
+    # Draw the lines in black on a white strip as wide as the photo
+    line_height = caption_font_size + 8
+    strip_height = line_height * len(lines) + 2 * caption_padding_pixels
+    strip = Image.new("RGB", (framed_photo.shape[1], strip_height), (255, 255, 255))
+    pen = ImageDraw.Draw(strip)
+    for line_number, line in enumerate(lines):
+        line_x = (framed_photo.shape[1] - font.getlength(line)) / 2
+        pen.text((line_x, caption_padding_pixels + line_number * line_height), line, font=font, fill=(0, 0, 0))
+
+    # PIL uses RGB and OpenCV uses BGR, so flip the colors before stacking the strip under the photo
+    strip_bgr = np.array(strip)[:, :, ::-1]
+    return np.vstack([framed_photo, strip_bgr])
+
+
+def load_framed_photo(photo_path, output_width, output_height, caption=None):
+    # Load the real photo, shrink it to fit the video, add a white border and the caption strip (if there is a caption)
     photo = cv2.imread(photo_path)
     photo_height, photo_width = photo.shape[:2]
     shrink = min(output_width * photo_width_fraction / photo_width, output_height * 0.8 / photo_height)
     photo = cv2.resize(photo, (round(photo_width * shrink), round(photo_height * shrink)), interpolation=cv2.INTER_AREA)
     white = (255, 255, 255)
-    return cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
+    framed_photo = cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
+    if caption:
+        framed_photo = add_caption_strip(framed_photo, caption)
+    return framed_photo
 
 
 def overlay_photo(frame, framed_photo, photo_zoom, photo_alpha):
@@ -167,7 +234,7 @@ def read_frame(decoder):
     return np.frombuffer(frame_bytes, np.uint8).reshape(OUTPUT_HEIGHT, OUTPUT_WIDTH, 3).astype(np.float32)
 
 
-def make_clip(raw_video_path, audio_path, final_video_path, photo_path):
+def make_clip(raw_video_path, audio_path, final_video_path, photo_path, caption):
     audio_seconds = get_media_seconds(audio_path)
     raw_seconds = get_media_seconds(raw_video_path)
 
@@ -188,7 +255,7 @@ def make_clip(raw_video_path, audio_path, final_video_path, photo_path):
     # Load the real photo once if this scene has one
     framed_photo = None
     if photo_path:
-        framed_photo = load_framed_photo(photo_path, OUTPUT_WIDTH, OUTPUT_HEIGHT)
+        framed_photo = load_framed_photo(photo_path, OUTPUT_WIDTH, OUTPUT_HEIGHT, caption)
     photo_end_seconds = photo_start_seconds + audio_seconds * photo_screen_fraction
 
     # Only two raw frames are kept in memory at a time: the one just before the current moment and the one just after
@@ -241,7 +308,12 @@ image_paths.sort(key=lambda path: int(re.findall(r"\d+", os.path.basename(path))
 for image_path in image_paths:
     scene_number = re.findall(r"\d+", os.path.basename(image_path))[0]
     raw_video_path = f"{raw_videos_folder}/scene_{scene_number}.mp4"
-    final_video_path = f"{videos_folder}/scene_{scene_number}.mp4"
+    final_video_path = f"{clips_folder}/scene_{scene_number}.mp4"
+
+    # Skip scenes whose finished video is already in the animated_narrated_clips folder
+    if os.path.exists(final_video_path):
+        print("Skipping scene", scene_number, "- video already exists")
+        continue
 
     # Skip scenes that the parallax animator makes
     if f"scene_{scene_number}" in parallax_scenes:
@@ -257,16 +329,18 @@ for image_path in image_paths:
     # Use a real photo for this scene if one exists, e.g. real_photos/scene_3.jpg
     photo_files = glob.glob(f"{real_photos_folder}/scene_{scene_number}.*")
     photo_path = photo_files[0] if photo_files else None
+    # The caption for this scene's real photo, from real_images_suggestions.md
+    caption = get_caption(os.path.join(images_folder, "real_images_suggestions.md"), scene_number)
 
     # The Krea call is commented out for now because the raw videos are already made. Turn it back on to make missing raw videos.
     # Scenes with a photo ask Krea for 7 seconds, scenes without one ask for 12 seconds.
-    # if not os.path.exists(raw_video_path):
-    #     direction_prompt = get_direction_prompt(narrative_path, scene_number)
-    #     print("Animating scene", scene_number, "with prompt:", direction_prompt)
-    #     uploaded_image_url = upload_image_to_krea(image_path)
-    #     job_id = start_video_job(uploaded_image_url, direction_prompt, PHOTO_SCENE_KREA_SECONDS)
-    #     video_url = wait_for_video_url(job_id)
-    #     download_video(video_url, raw_video_path)
+    if not os.path.exists(raw_video_path):
+        direction_prompt = get_direction_prompt(narrative_path, scene_number)
+        print("Animating scene", scene_number, "with prompt:", direction_prompt)
+        uploaded_image_url = upload_image_to_krea(image_path)
+        job_id = start_video_job(uploaded_image_url, direction_prompt, PHOTO_SCENE_KREA_SECONDS)
+        video_url = wait_for_video_url(job_id)
+        download_video(video_url, raw_video_path)
 
     # Without Krea there is nothing to build the clip from unless the raw video is already on disk
     if not os.path.exists(raw_video_path):
@@ -274,6 +348,6 @@ for image_path in image_paths:
         continue
 
     print("Making", final_video_path, "with real photo" if photo_path else "without real photo")
-    make_clip(raw_video_path, audio_files[0], final_video_path, photo_path)
+    make_clip(raw_video_path, audio_files[0], final_video_path, photo_path, caption)
 
-print("Done! Clips saved in", videos_folder)
+print("Done! Clips saved in", clips_folder)

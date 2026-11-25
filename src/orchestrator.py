@@ -11,17 +11,17 @@ narrative_path = "inputs/" + doc_name + "/narrative.txt"
 
 # Each step is a script in src/ that takes the doc name and the narrative path as arguments, run in order
 steps = [
-    "image_generator.py",
-    "image_coords_extractor.py",  # needed by the parallax animator
-    "depth_map_generator.py",  # needed by the parallax animator
+    # "image_generator.py",
+    # "image_coords_extractor.py",  # needed by the parallax animator
+    # "depth_map_generator.py",  # needed by the parallax animator
     "narration_voice_generator.py",
-    # "animation_parallax_generator.py",  # only makes the scenes in parallax_scenes
-    # "animate_image_with_krea.py",  # makes every scene EXCEPT the ones in parallax_scenes
+    "animation_parallax_generator.py",  # only makes the scenes in parallax_scenes
+    "animate_image_with_krea.py",  # makes every scene EXCEPT the ones in parallax_scenes
     "final_video_generator.py",
 ]
 
-# Scenes that use the parallax animator instead of Krea, e.g. ["scene_3", "scene_7"]
-parallax_scenes = ["scene_2", "scene_5", "scene_8", "scene_13"]
+# parallax_scenes = ["scene_2", "scene_5", "scene_8", "scene_13"] #yuri
+parallax_scenes = ["scene_2", "scene_3", "scene_6", "scene_9", "scene_10", "scene_11","scene_13","scene_16","scene_17","scene_19","scene_20","scene_21","scene_22","scene_25","scene_27" ] #gta
 
 # The two animators get the parallax scene list as extra arguments (the parallax one makes only those, the Krea one skips them)
 steps_that_need_parallax_scenes = ["animation_parallax_generator.py", "animate_image_with_krea.py"]
@@ -46,3 +46,5 @@ finally:
 print("Done! Final video is in videos/" + doc_name + "/final_video.mp4")
 
 
+
+#the tidbit archive
