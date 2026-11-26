@@ -15,8 +15,8 @@ steps = [
     # "image_generator.py",
     # "image_coords_extractor.py",  # needed by the parallax animator
     # "depth_map_generator.py",  # needed by the parallax animator
-    # "narration_voice_generator.py",
-    "animate_parallax.py",  # only makes the scenes in parallax_scenes
+    "narration_voice_generator.py",
+    "animate_parallax.py",  #   only makes the scenes in parallax_scenes
     "animate_krea.py",  # makes every scene EXCEPT the ones in parallax_scenes
     "final_video_generator.py",
 ]

@@ -1,15 +1,25 @@
 {
-  "video_title": "The Thirteen Year Wait",
-  "opener_stamp": "13 YEARS",
-  "scene_stamps": {
-    "1": "STILL WAITING",
-    "3": "How It Started",
-    "6": "The Rhythm Stops",
+  "video_title": "The Longest Wait In Gaming",
+  "scene_titles": {
+    "3": "Where It Began",
+    "7": "The Money Machine",
     "10": "The Silence",
     "12": "The Leak",
-    "16": "90 MILLION VIEWS",
-    "22": "DELAYED",
-    "27": "13 YEARS"
+    "14": "Why So Long",
+    "16": "The Trailer",
+    "22": "Delay After Delay",
+    "27": "A Generation Waits"
   },
-  "closer_stamp": "WORTH THE WAIT?"
+  "opener_stamp": "13 YEARS LATER",
+  "scene_stamps": {
+    "3": "1997",
+    "7": "GTA ONLINE",
+    "10": "NOT A WORD",
+    "12": "90 VIDEOS LEAKED",
+    "14": "OVER $1 BILLION",
+    "16": "90 MILLION VIEWS",
+    "22": "NOVEMBER 2026",
+    "27": "STILL WAITING"
+  },
+  "closer_stamp": "PATIENCE PAYS"
 }

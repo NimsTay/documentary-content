@@ -354,46 +354,51 @@ def make_prop(prop_name, size, palette, seed, label_text="", label_font=None):
     return sprite
 
 
-# a little paper explorer: wide brim hat, one big round eye, a flared coat, a scarf that flaps and thin legs with round boots.
-# pose 0 and 1 swap the legs and flap the scarf for a walk cycle
+# a mid-century modern cowboy: tiny head, tall cowboy hat with a curled brim, an upside-down triangle torso,
+# a bandana, long skinny legs and pointy boots, like 1950s cartoon illustration. pose 0 and 1 swap the legs for a walk cycle
 def make_character(size, fill_hex, palette, seed, pose=0):
     mask_image = Image.new("L", (size, size), 0)
     mask_draw = ImageDraw.Draw(mask_image)
-    # round head
-    mask_draw.ellipse([size * 0.35, size * 0.12, size * 0.65, size * 0.4], fill=255)
-    # hat: wide brim plus a tall crown
-    mask_draw.ellipse([size * 0.2, size * 0.13, size * 0.8, size * 0.23], fill=255)
-    mask_draw.rounded_rectangle([size * 0.36, size * 0.01, size * 0.64, size * 0.18], radius=size * 0.03, fill=255)
-    # coat that flares out like a bell
-    mask_draw.polygon([(size * 0.38, size * 0.38), (size * 0.62, size * 0.38), (size * 0.8, size * 0.76), (size * 0.2, size * 0.76)], fill=255)
-    # scarf tail flapping behind, it lifts higher on pose 1
-    scarf_tip_y = size * (0.5 if pose == 0 else 0.4)
-    mask_draw.polygon([(size * 0.4, size * 0.38), (size * 0.08, scarf_tip_y), (size * 0.12, scarf_tip_y + size * 0.08), (size * 0.42, size * 0.46)], fill=255)
-    # thin legs, apart on pose 0 and together on pose 1, each with a round boot
+    # small oval head
+    mask_draw.ellipse([size * 0.43, size * 0.12, size * 0.57, size * 0.27], fill=255)
+    # cowboy hat: a brim that curls up at both ends plus a tall pinched crown
+    hat_brim = [(size * 0.24, size * 0.09), (size * 0.33, size * 0.15), (size * 0.67, size * 0.15), (size * 0.76, size * 0.09), (size * 0.7, size * 0.18), (size * 0.3, size * 0.18)]
+    hat_crown = [(size * 0.39, size * 0.15), (size * 0.41, size * 0.02), (size * 0.5, size * 0.05), (size * 0.59, size * 0.02), (size * 0.61, size * 0.15)]
+    mask_draw.polygon(hat_brim, fill=255)
+    mask_draw.polygon(hat_crown, fill=255)
+    # wide shoulders narrowing to a thin waist: the classic upside-down triangle
+    mask_draw.polygon([(size * 0.28, size * 0.28), (size * 0.72, size * 0.28), (size * 0.54, size * 0.6), (size * 0.46, size * 0.6)], fill=255)
+    # thin arms hanging down from the shoulders, slightly bent out
+    mask_draw.line([(size * 0.3, size * 0.3), (size * 0.24, size * 0.46), (size * 0.3, size * 0.56)], fill=255, width=max(3, size // 30))
+    mask_draw.line([(size * 0.7, size * 0.3), (size * 0.76, size * 0.46), (size * 0.7, size * 0.56)], fill=255, width=max(3, size // 30))
+    # long skinny legs: spread wide on pose 0, close together on pose 1
     if pose == 0:
-        leg_x_positions = [0.36, 0.6]
+        foot_x_positions = [0.34, 0.66]
     else:
-        leg_x_positions = [0.44, 0.52]
-    for leg_x in leg_x_positions:
-        mask_draw.rectangle([size * leg_x, size * 0.74, size * (leg_x + 0.05), size * 0.92], fill=255)
-        mask_draw.ellipse([size * (leg_x - 0.03), size * 0.89, size * (leg_x + 0.12), size * 0.99], fill=255)
-    sprite = make_cut_piece(np.array(mask_image), fill_hex, palette, seed, outline_width=max(5, size // 26), dot_hex=palette["ink"], dot_coverage=0.25, dot_step=14)
+        foot_x_positions = [0.45, 0.55]
+    leg_width = max(3, size // 32)
+    for foot_x in foot_x_positions:
+        mask_draw.line([(size * 0.5, size * 0.59), (size * foot_x, size * 0.9)], fill=255, width=leg_width)
+        # pointy cowboy boot with a heel
+        mask_draw.polygon([(size * (foot_x - 0.03), size * 0.86), (size * (foot_x + 0.03), size * 0.86), (size * (foot_x + 0.1), size * 0.96), (size * (foot_x - 0.03), size * 0.97)], fill=255)
+    sprite = make_cut_piece(np.array(mask_image), fill_hex, palette, seed, outline_width=max(4, size // 32), dot_hex=palette["ink"], dot_coverage=0.2, dot_step=14)
     # ink details on top. Everything is offset by the empty space around the piece
     detail_draw = ImageDraw.Draw(sprite)
     offset = CUT_PADDING
     ink_hex = palette["ink"]
-    # the hat is solid ink with a band in the highlight colour
-    detail_draw.ellipse([offset + size * 0.2, offset + size * 0.13, offset + size * 0.8, offset + size * 0.23], fill=ink_hex)
-    detail_draw.rounded_rectangle([offset + size * 0.36, offset + size * 0.01, offset + size * 0.64, offset + size * 0.18], radius=size * 0.03, fill=ink_hex)
-    detail_draw.rectangle([offset + size * 0.36, offset + size * 0.13, offset + size * 0.64, offset + size * 0.16], fill=palette["highlight"])
-    # one big round eye looking ahead
-    detail_draw.ellipse([offset + size * 0.45, offset + size * 0.24, offset + size * 0.6, offset + size * 0.37], fill=palette["paper"], outline=ink_hex, width=max(2, size // 60))
-    detail_draw.ellipse([offset + size * 0.52, offset + size * 0.28, offset + size * 0.58, offset + size * 0.34], fill=ink_hex)
-    # scarf in the alarm red and three coat buttons
-    detail_draw.polygon([(offset + size * 0.4, offset + size * 0.38), (offset + size * 0.08, offset + scarf_tip_y), (offset + size * 0.12, offset + scarf_tip_y + size * 0.08), (offset + size * 0.42, offset + size * 0.46)], fill=palette["alarm"], outline=ink_hex)
-    for button_index in range(3):
-        button_y = size * (0.5 + button_index * 0.08)
-        detail_draw.ellipse([offset + size * 0.48, offset + button_y, offset + size * 0.52, offset + button_y + size * 0.04], fill=ink_hex)
+    # hat and boots are solid ink, with a highlight hat band
+    detail_draw.polygon([(offset + x, offset + y) for x, y in hat_brim], fill=ink_hex)
+    detail_draw.polygon([(offset + x, offset + y) for x, y in hat_crown], fill=ink_hex)
+    detail_draw.rectangle([offset + size * 0.39, offset + size * 0.12, offset + size * 0.61, offset + size * 0.145], fill=palette["highlight"])
+    for foot_x in foot_x_positions:
+        detail_draw.polygon([(offset + size * (foot_x - 0.03), offset + size * 0.86), (offset + size * (foot_x + 0.03), offset + size * 0.86), (offset + size * (foot_x + 0.1), offset + size * 0.96), (offset + size * (foot_x - 0.03), offset + size * 0.97)], fill=ink_hex)
+    # two dot eyes, no other face
+    for eye_x in [0.47, 0.53]:
+        detail_draw.ellipse([offset + size * (eye_x - 0.012), offset + size * 0.19, offset + size * (eye_x + 0.012), offset + size * 0.215], fill=ink_hex)
+    # red bandana knotted at the neck, its point hanging down the chest
+    detail_draw.polygon([(offset + size * 0.4, offset + size * 0.28), (offset + size * 0.6, offset + size * 0.28), (offset + size * 0.5, offset + size * 0.38)], fill=palette["alarm"], outline=ink_hex)
+    # a big belt buckle at the waist
+    detail_draw.ellipse([offset + size * 0.46, offset + size * 0.54, offset + size * 0.54, offset + size * 0.6], fill=palette["highlight"], outline=ink_hex, width=max(2, size // 80))
     return sprite
 
 
