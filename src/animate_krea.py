@@ -1,4 +1,4 @@
-# TO RUN (from the documentary-content folder): python src/animate_image_with_krea.py <doc_name> <narrative_path>
+# TO RUN (from the documentary-content folder): python src/animate_krea.py <doc_name> <narrative_path>
 # For every image in images/<doc_name>/ (scene_1.png, scene_2.png, ...) that has audio in audio/<doc_name>/:
 #   1. (Krea call is commented out for now) animates the image with Krea using the scene's "* Direction:" line, the raw video is kept in videos/<doc_name>/raw/
 #   2. upscales the raw video to 1080p with ffmpeg
@@ -6,7 +6,7 @@
 #      - audio 14 seconds or shorter: one steady slow speed, the video ends when the audio ends
 #      - audio longer than 14 seconds: the video eases smoothly to a stop on its last frame at 14 seconds, and that frame is held while the audio keeps going
 #   4. if the scene has a real photo (images/<doc_name>/real_photos/scene_N.*) it fades in over the video, stays for half the audio,
-#      and dissolves out (same look as animation_parallax_generator.py)
+#      and dissolves out (same look as animate_parallax.py)
 # The finished clip (with the audio) is saved as videos/<doc_name>/animated_narrated_clips/scene_N.mp4
 import glob
 import os
@@ -27,20 +27,21 @@ HEADERS = {"Authorization": f"Bearer {os.environ['KREA_KEY']}"}
 VIDEO_MODEL_ENDPOINT = f"{API_BASE}/generate/video/bytedance/seedance-1.0-pro-fast"
 VIDEO_RESOLUTION = "720p"
 PHOTO_SCENE_KREA_SECONDS = 7        # length asked from Krea for scenes with a real photo (slowed down to match the audio)
-MAX_VIDEO_SECONDS = 14              # the video never plays longer than this, if the audio is longer the last frame is held
-EASE_OUT_SECONDS = 5                # when the audio is longer than MAX_VIDEO_SECONDS the video slows smoothly to a stop over its last this-many seconds
+MAX_VIDEO_SECONDS = 12              # the raw video is slowed to play over this long, then its last frame is frozen until the audio ends
+EASE_OUT_SECONDS = 5                # the video slows smoothly to a stop over its last this-many seconds before freezing
 
 # Output video settings
 OUTPUT_WIDTH = 1920
 OUTPUT_HEIGHT = 1080
 FRAMES_PER_SECOND = 24
 
-# Real photo overlay settings (same values as animation_parallax_generator.py)
-photo_width_fraction = 0.55      # photo is this fraction of the video width (it is also kept under 80% of the height)
-photo_start_seconds = 1.0        # when the photo starts fading in
-photo_screen_fraction = 0.5      # how much of the video the photo is up for (0.5 = half), counting the fade in and the dissolve
-photo_fade_in_seconds = 3.0      # how long the photo takes to slowly fade in
-photo_dissolve_seconds = 3.0     # how long the photo takes to dissolve back into the video
+# Real photo overlay settings (same values as animate_parallax.py)
+photo_width_fraction = 0.42      # photo is this fraction of the video width (it is also kept under photo_height_fraction of the height)
+photo_height_fraction = 0.58     # small enough that the photo caption stays above the subtitles
+photo_start_seconds = 0.5        # when the photo starts fading in
+photo_screen_fraction = 0.5      # how much of the scene the photo is fully shown for (0.5 = half), the fade in and dissolve are extra
+photo_fade_in_seconds = 1.5      # how long the photo takes to slowly fade in
+photo_dissolve_seconds = 1.5     # how long the photo takes to dissolve back into the video
 photo_slow_zoom = 0.03           # the photo grows by this fraction over its time on screen
 photo_border_pixels = 12         # white border around the photo
 shadow_margin_pixels = 30        # how far the soft shadow spreads around the photo
@@ -178,7 +179,7 @@ def load_framed_photo(photo_path, output_width, output_height, caption=None):
     # Load the real photo, shrink it to fit the video, add a white border and the caption strip (if there is a caption)
     photo = cv2.imread(photo_path)
     photo_height, photo_width = photo.shape[:2]
-    shrink = min(output_width * photo_width_fraction / photo_width, output_height * 0.8 / photo_height)
+    shrink = min(output_width * photo_width_fraction / photo_width, output_height * photo_height_fraction / photo_height)
     photo = cv2.resize(photo, (round(photo_width * shrink), round(photo_height * shrink)), interpolation=cv2.INTER_AREA)
     white = (255, 255, 255)
     framed_photo = cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
@@ -226,6 +227,23 @@ def get_raw_video_seconds_at(output_seconds, raw_seconds, move_seconds, ease_out
     return raw_seconds
 
 
+def get_usable_raw_seconds(raw_video_path):
+    # Some Krea videos fade to black in their last moment. Holding that last frame would leave a black screen,
+    # so find the last frame that is still at least half as bright as the clip normally is, and only use the video up to there.
+    # Frames are read tiny (64x36) because only their brightness matters
+    decoder = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", raw_video_path, "-vf", "scale=64:36", "-f", "rawvideo", "-pix_fmt", "gray", "-"], stdout=subprocess.PIPE)
+    frame_brightness_list = []
+    while True:
+        frame_bytes = decoder.stdout.read(64 * 36)
+        if len(frame_bytes) < 64 * 36:
+            break
+        frame_brightness_list.append(np.frombuffer(frame_bytes, np.uint8).mean())
+    decoder.wait()
+    bright_enough = np.median(frame_brightness_list) * 0.5
+    last_good_frame = max(index for index, brightness in enumerate(frame_brightness_list) if brightness >= bright_enough)
+    return (last_good_frame + 1) / FRAMES_PER_SECOND
+
+
 def read_frame(decoder):
     # Read the next 1080p frame from ffmpeg as a float picture, or None when the video has ended
     frame_bytes = decoder.stdout.read(OUTPUT_WIDTH * OUTPUT_HEIGHT * 3)
@@ -236,18 +254,18 @@ def read_frame(decoder):
 
 def make_clip(raw_video_path, audio_path, final_video_path, photo_path, caption):
     audio_seconds = get_media_seconds(audio_path)
-    raw_seconds = get_media_seconds(raw_video_path)
+    # only the part of the raw video before any fade to black at the end
+    raw_seconds = get_usable_raw_seconds(raw_video_path)
 
-    # The video moves for 14 seconds at most. If the audio is longer, the video eases to a stop on its last frame and holds it until the audio ends.
-    # If the audio is 14 seconds or shorter, the video is slowed to fit the audio at one steady speed with no ease out.
+    # The raw video is slowed down to play over 12 seconds (or the whole audio if that is shorter).
+    # It always eases smoothly to a stop on its last frame, then that frame is frozen until the audio ends.
+    # Short clips get a shorter ease out (half their length at most) so they still move for a while first
     move_seconds = min(MAX_VIDEO_SECONDS, audio_seconds)
-    ease_out_seconds = 0
-    if audio_seconds > MAX_VIDEO_SECONDS:
-        ease_out_seconds = EASE_OUT_SECONDS
+    ease_out_seconds = min(EASE_OUT_SECONDS, move_seconds / 2)
 
     # Decoder: upscale the raw video to 1080p and send us its frames at normal speed (we slow it down ourselves below)
     video_filter = f"scale={OUTPUT_WIDTH}:{OUTPUT_HEIGHT}:flags=lanczos"
-    decoder = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", raw_video_path, "-vf", video_filter, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], stdout=subprocess.PIPE)
+    decoder = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", raw_video_path, "-t", str(raw_seconds), "-vf", video_filter, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], stdout=subprocess.PIPE)
 
     # Encoder: takes our finished frames, adds the audio file and writes the mp4
     encoder = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{OUTPUT_WIDTH}x{OUTPUT_HEIGHT}", "-r", str(FRAMES_PER_SECOND), "-i", "-", "-i", audio_path, "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", final_video_path], stdin=subprocess.PIPE)
@@ -256,7 +274,7 @@ def make_clip(raw_video_path, audio_path, final_video_path, photo_path, caption)
     framed_photo = None
     if photo_path:
         framed_photo = load_framed_photo(photo_path, OUTPUT_WIDTH, OUTPUT_HEIGHT, caption)
-    photo_end_seconds = photo_start_seconds + audio_seconds * photo_screen_fraction
+    photo_end_seconds = photo_start_seconds + photo_fade_in_seconds + audio_seconds * photo_screen_fraction + photo_dissolve_seconds
 
     # Only two raw frames are kept in memory at a time: the one just before the current moment and the one just after
     raw_frame_number = 0
@@ -329,8 +347,8 @@ for image_path in image_paths:
     # Use a real photo for this scene if one exists, e.g. real_photos/scene_3.jpg
     photo_files = glob.glob(f"{real_photos_folder}/scene_{scene_number}.*")
     photo_path = photo_files[0] if photo_files else None
-    # The caption for this scene's real photo, from real_images_suggestions.md
-    caption = get_caption(os.path.join(images_folder, "real_images_suggestions.md"), scene_number)
+    # The caption for this scene's real photo, from inputs/<doc_name>/real_images_suggestions.md
+    caption = get_caption(os.path.join(CONTENT_ROOT, "inputs", doc_name, "real_images_suggestions.md"), scene_number)
 
     # The Krea call is commented out for now because the raw videos are already made. Turn it back on to make missing raw videos.
     # Scenes with a photo ask Krea for 7 seconds, scenes without one ask for 12 seconds.

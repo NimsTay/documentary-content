@@ -2,7 +2,7 @@
 # Optional effects (soft glow pulse, drifting haze, floating dust) are commented out: search for "TRY" and uncomment the marked lines to turn them on.
 # Each video is as long as its audio clip: images/scene_1.png + audio/audio_1.wav -> videos/clip_1.mp4
 # Keeps your exact pixels, no AI. Run from the documentary-content folder:
-#   python src/motion_video.py
+#   python src/animate_parallax.py
 import glob
 import json
 import os
@@ -27,11 +27,12 @@ real_photos_folder = images_folder + "/real_photos"  # put real photos here name
 depth_maps_folder = "depth_maps/" + doc_name    # put grayscale depth maps here named like scene_3.png (white = close, black = far) to get parallax on scene 3
 
 # Real photo overlay settings
-photo_width_fraction = 0.55      # photo is this fraction of the video width (it is also kept under 80% of the height)
-photo_start_seconds = 1.0        # when the photo starts fading in
-photo_screen_fraction = 0.5      # how much of the video the photo is up for (0.5 = half), counting the fade in and the dissolve
-photo_fade_in_seconds = 3.0      # how long the photo takes to slowly fade in
-photo_dissolve_seconds = 3.0     # how long the photo takes to dissolve back into the generated picture
+photo_width_fraction = 0.42      # photo is this fraction of the video width (it is also kept under photo_height_fraction of the height)
+photo_height_fraction = 0.58     # small enough that the photo caption stays above the subtitles
+photo_start_seconds = 0.5        # when the photo starts fading in
+photo_screen_fraction = 0.5      # how much of the scene the photo is fully shown for (0.5 = half), the fade in and dissolve are extra
+photo_fade_in_seconds = 1.5      # how long the photo takes to slowly fade in
+photo_dissolve_seconds = 1.5     # how long the photo takes to dissolve back into the generated picture
 photo_slow_zoom = 0.03           # the photo grows by this fraction over its time on screen
 photo_border_pixels = 12         # white border around the photo
 shadow_margin_pixels = 30        # how far the soft shadow spreads around the photo
@@ -47,12 +48,14 @@ focal_coords_file = images_folder + "/focal_coords.json"
 
 frames_per_second = 24  # must match the Krea clips (24), clips with different frame rates break the final join
 fade_in_seconds = 2
+max_motion_seconds = 12  # all the motion (camera, sway, parallax, glow, dust) plays over this long, then the picture freezes until the audio ends
+ease_out_seconds = 5     # the motion slows smoothly to a stop over its last this-many seconds before freezing
 
 # Soft glow pulse settings (OFF until you uncomment its two sections): the bright areas swell and fade like light breathing
 glow_threshold = 120             # only pixels brighter than this glow (lower = more of the picture glows)
 glow_blur = 90                   # how wide and soft the glow is (bigger = the light spills further into the dark areas around it)
-glow_strength = 2.0              # how bright the glow gets at its peak
-glow_pulses_per_second = 0.15     # 0.2 is one slow breath every 5 seconds
+glow_strength = 1.4              # how bright the glow gets at its peak
+glow_pulses_per_second = 0.13     # 0.2 is one slow breath every 5 seconds
 
 # Drifting haze settings (OFF until you uncomment its two sections): faint mist sliding sideways, thicker toward the bottom
 haze_strength = 0.3              # how thick the mist is (0 = none, 0.5 = heavy)
@@ -156,7 +159,7 @@ def load_framed_photo(photo_path, output_width, output_height, caption=None):
     # Load the real photo, shrink it to fit the video, add a white border and the caption strip (if there is a caption)
     photo = cv2.imread(photo_path)
     photo_height, photo_width = photo.shape[:2]
-    shrink = min(output_width * photo_width_fraction / photo_width, output_height * 0.8 / photo_height)
+    shrink = min(output_width * photo_width_fraction / photo_width, output_height * photo_height_fraction / photo_height)
     photo = cv2.resize(photo, (round(photo_width * shrink), round(photo_height * shrink)), interpolation=cv2.INTER_AREA)
     white = (255, 255, 255)
     framed_photo = cv2.copyMakeBorder(photo, photo_border_pixels, photo_border_pixels, photo_border_pixels, photo_border_pixels, cv2.BORDER_CONSTANT, value=white)
@@ -292,8 +295,25 @@ def add_floating_dust(frame, dust_particles, seconds_so_far):
     return frame + dust_layer[:, :, None] * np.float32(dust_color) * dust_strength
 
 
+def get_motion_seconds_at(seconds_so_far, motion_seconds, ease_seconds):
+    # A clock for all the motion: it runs at a steady speed, then in the last ease_seconds it slows smoothly to zero
+    # and stops at motion_seconds, so everything that moves glides to a halt and the picture freezes (same idea as the Krea script).
+    steady_speed = motion_seconds / (motion_seconds - ease_seconds / 2)
+    steady_part_end = motion_seconds - ease_seconds
+    if seconds_so_far <= steady_part_end:
+        return steady_speed * seconds_so_far
+    if seconds_so_far < motion_seconds:
+        # the speed follows half a cosine wave (full speed -> zero) so it slows gently with no sudden change
+        ease_progress = (seconds_so_far - steady_part_end) / ease_seconds
+        return steady_speed * steady_part_end + steady_speed * (ease_seconds / 2) * (ease_progress + np.sin(np.pi * ease_progress) / np.pi)
+    return motion_seconds
+
+
 def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=None, depth_map_path=None, caption=None):
     video_seconds = get_audio_seconds(audio_path)
+    # motion lasts 12 seconds (or the whole audio if it is shorter), short clips ease out over half their length at most
+    motion_seconds = min(max_motion_seconds, video_seconds)
+    motion_ease_seconds = min(ease_out_seconds, motion_seconds / 2)
 
     image = cv2.imread(image_path)
     image_height, image_width = image.shape[:2]
@@ -339,7 +359,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
     framed_photo = None
     if photo_path:
         framed_photo = load_framed_photo(photo_path, output_width, output_height, caption)
-    photo_end_seconds = photo_start_seconds + video_seconds * photo_screen_fraction
+    photo_end_seconds = photo_start_seconds + photo_fade_in_seconds + video_seconds * photo_screen_fraction + photo_dissolve_seconds
 
     # ffmpeg reads the raw frames from us, adds the audio file and writes the mp4
     ffmpeg = subprocess.Popen(
@@ -351,7 +371,9 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
 
     for frame_number in range(total_frames):
         seconds_so_far = frame_number / frames_per_second
-        progress = frame_number / (total_frames - 1)
+        # everything that moves uses the motion clock, which stops at motion_seconds so the picture freezes
+        motion_clock = get_motion_seconds_at(seconds_so_far, motion_seconds, motion_ease_seconds)
+        progress = motion_clock / motion_seconds
         # Very smooth start and stop (no sudden speed changes anywhere)
         smooth_progress = progress ** 3 * (progress * (progress * 6 - 15) + 10)
 
@@ -365,20 +387,20 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
             camera_progress = smooth_progress
         camera_x = camera_start[0] + (camera_end[0] - camera_start[0]) * camera_progress
         camera_y = camera_start[1] + (camera_end[1] - camera_start[1]) * camera_progress
-        camera_x += np.sin(seconds_so_far * 0.8) * sway_amount * image_width
+        camera_x += np.sin(motion_clock * 0.8) * sway_amount * image_width
 
         # Start every frame from the plain picture, then add the light effects on top of it
         lit_image = image.astype(np.float32)
 
         # TRY soft glow pulse (also uncomment its line above in the setup)
-        lit_image = add_glow_pulse(lit_image, glow_layer, seconds_so_far)
+        lit_image = add_glow_pulse(lit_image, glow_layer, motion_clock)
 
         # TRY drifting haze (also uncomment its line above in the setup)
-        # lit_image = add_drifting_haze(lit_image, haze_texture, seconds_so_far)
+        # lit_image = add_drifting_haze(lit_image, haze_texture, motion_clock)
 
         # Parallax: slide the close parts of the image more than the far parts
         if use_parallax and depth_map is not None:
-            lit_image = apply_parallax(lit_image, depth_map, pixel_grid_x, pixel_grid_y, seconds_so_far)
+            lit_image = apply_parallax(lit_image, depth_map, pixel_grid_x, pixel_grid_y, motion_clock)
 
         # Size of the area of the image the camera sees right now
         visible_width = image_width / zoom
@@ -396,7 +418,7 @@ def make_clip(image_path, audio_path, clip_path, focus_x, focus_y, photo_path=No
         frame = cv2.warpAffine(lit_image, move_and_scale, (output_width, output_height), flags=cv2.INTER_CUBIC)
 
         # TRY floating dust / embers (also uncomment its line above in the setup)
-        frame = add_floating_dust(frame, dust_particles, seconds_so_far)
+        frame = add_floating_dust(frame, dust_particles, motion_clock)
 
         # Fade in from black
         if fade_in:
@@ -450,8 +472,8 @@ for image_path in image_paths:
     # Use a depth map for this scene if one exists, e.g. depth_maps/scene_3.png
     depth_map_files = glob.glob(depth_maps_folder + "/scene_" + scene_number + ".*")
     depth_map_path = depth_map_files[0] if depth_map_files else None
-    # The caption for this scene's real photo, from real_images_suggestions.md
-    caption = get_caption(images_folder + "/real_images_suggestions.md", scene_number)
+    # The caption for this scene's real photo, from inputs/<doc_name>/real_images_suggestions.md
+    caption = get_caption("inputs/" + doc_name + "/real_images_suggestions.md", scene_number)
     # The point this scene zooms in on
     scene_focal_point = focal_coords["scene_" + scene_number]
     print("Making", clip_path, "zooming to", scene_focal_point["x"], scene_focal_point["y"], "with real photo" if photo_path else "", "with depth map" if depth_map_path else "")

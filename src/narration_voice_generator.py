@@ -21,7 +21,10 @@ os.makedirs(audio_folder, exist_ok=True)
 # ElevenLabs settings - tweak these
 model_name = "eleven_v4_turbo"
 # Jon - Warm & Grounded Storyteller (other Jon voices have different ids, copy the id from the ElevenLabs Voice Library)
-jon_voice_id = "JYUzXNeyCPmymMkfcicu"
+# voice_id = "JYUzXNeyCPmymMkfcicu"
+
+#grandfather joe british
+voice_id = "0lp4RIz96WD1RUtvEu3Q"
 
 storyboard_text = open(narrative_path).read()
 
@@ -29,7 +32,6 @@ storyboard_text = open(narrative_path).read()
 scene_numbers = re.findall(r"scene #(\d+)", storyboard_text, re.IGNORECASE)
 # The "* " bullet is optional because pasted storyboards sometimes lose it
 scene_scripts = re.findall(r"^(?:\* )?script: (.+)", storyboard_text, re.IGNORECASE | re.MULTILINE)
-
 
 
 for scene_number, scene_script in zip(scene_numbers, scene_scripts):
@@ -40,7 +42,7 @@ for scene_number, scene_script in zip(scene_numbers, scene_scripts):
         print("Skipping scene", scene_number, "(audio already exists)")
         continue
     # ElevenLabs sends the audio back in chunks, so join them and save as an mp3 file
-    audio_chunks = elevenlabs_client.text_to_speech.convert(text=scene_script, voice_id=jon_voice_id, model_id=model_name)
+    audio_chunks = elevenlabs_client.text_to_speech.convert(text=scene_script, voice_id=voice_id, model_id=model_name)
     open(clip_path, "wb").write(b"".join(audio_chunks))
     print("Completed scene", scene_number)
 

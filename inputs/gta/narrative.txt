@@ -132,7 +132,7 @@ Direction: Fade in. Slow push-in on the red circle. Pacing slow and tense. Ends 
 
 Scene #23
 
-Script: Then another bomb dropped in November 2025. Another delay, to November 2026. Rockstar said it needed more time to polish. Fans groaned. Memes exploded. But strangely, many said the same thing... take all the time you need.
+Script: Then another bomb; a delay again, to November 2026. Rockstar said it needed more time to polish. Fans groaned. Memes exploded. But strangely, many said the same thing... take all the time you need.
 Visual prompt: Dramatic stylized photograph, a huge grandfather-style clock with a blank face and no numerals, hands stopped, standing alone in a dark hall lit by a single beam of light. Foreground: dusty floor. Midground: the clock. Background: dark hall. Heavy, patient mood. Faces: none visible. Hands: not visible. No text, letters, numbers, logos, signs or watermarks anywhere; clock face is blank with no numerals.
 Direction: Cut in. Slow pull-back from the clock face to reveal the empty hall. Pacing slow and weighty. Ends in dim light.
 

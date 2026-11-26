@@ -1,6 +1,7 @@
 # Runs the whole documentary pipeline for one doc name.
 # TO RUN (from the documentary-content folder): python src/orchestrator.py <doc_name>
 import glob
+import json
 import subprocess
 import sys
 
@@ -14,17 +15,22 @@ steps = [
     # "image_generator.py",
     # "image_coords_extractor.py",  # needed by the parallax animator
     # "depth_map_generator.py",  # needed by the parallax animator
-    "narration_voice_generator.py",
-    "animation_parallax_generator.py",  # only makes the scenes in parallax_scenes
-    "animate_image_with_krea.py",  # makes every scene EXCEPT the ones in parallax_scenes
+    # "narration_voice_generator.py",
+    "animate_parallax.py",  # only makes the scenes in parallax_scenes
+    "animate_krea.py",  # makes every scene EXCEPT the ones in parallax_scenes
     "final_video_generator.py",
 ]
 
-# parallax_scenes = ["scene_2", "scene_5", "scene_8", "scene_13"] #yuri
-parallax_scenes = ["scene_2", "scene_3", "scene_6", "scene_9", "scene_10", "scene_11","scene_13","scene_16","scene_17","scene_19","scene_20","scene_21","scene_22","scene_25","scene_27" ] #gta
+# Each project lists its parallax scene numbers in its own parallax_scenes.json, like [1, 4, 5, 7]
+parallax_scenes_path = "inputs/" + doc_name + "/parallax_scenes.json"
+with open(parallax_scenes_path) as parallax_scenes_file:
+    parallax_scene_numbers = json.load(parallax_scenes_file)
+
+# The animators expect scene names like "scene_4", so turn each number into a name
+parallax_scenes = ["scene_" + str(scene_number) for scene_number in parallax_scene_numbers]
 
 # The two animators get the parallax scene list as extra arguments (the parallax one makes only those, the Krea one skips them)
-steps_that_need_parallax_scenes = ["animation_parallax_generator.py", "animate_image_with_krea.py"]
+steps_that_need_parallax_scenes = ["animate_parallax.py", "animate_krea.py"]
 
 try:
     for step in steps:

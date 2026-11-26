@@ -1,0 +1,34 @@
+{
+  "style": "Zine: cut-and-paste pages, speech bubbles, clocks, confetti",
+  "transition": "card_deck",
+  "fonts": {
+    "title": "/System/Library/Fonts/Supplemental/Futura.ttc",
+    "caption": "/System/Library/Fonts/Supplemental/Futura.ttc"
+  },
+  "props": [
+    "speech_bubble",
+    "clock",
+    "starburst",
+    "character",
+    "confetti"
+  ],
+  "halftone_step": 23,
+  "screen_angles": [
+    10,
+    40,
+    70
+  ],
+  "dark_ground": false,
+  "music": {
+    "ostinato": [
+      61.7,
+      73.4,
+      92.5,
+      73.4,
+      82.4,
+      61.7,
+      110.0,
+      92.5
+    ]
+  }
+}

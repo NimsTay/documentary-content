@@ -1,13 +1,15 @@
 {
   "video_title": "The Thirteen Year Wait",
-  "scene_titles": {
-    "1": "Still Waiting",
+  "opener_stamp": "13 YEARS",
+  "scene_stamps": {
+    "1": "STILL WAITING",
     "3": "How It Started",
     "6": "The Rhythm Stops",
     "10": "The Silence",
     "12": "The Leak",
-    "16": "The Trailer",
-    "22": "The Delays",
-    "27": "Thirteen Years"
-  }
+    "16": "90 MILLION VIEWS",
+    "22": "DELAYED",
+    "27": "13 YEARS"
+  },
+  "closer_stamp": "WORTH THE WAIT?"
 }

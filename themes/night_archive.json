@@ -1,0 +1,33 @@
+{
+  "style": "Night archive: cards on a dark ink ground with lighter dots, folders and clocks",
+  "transition": "depth",
+  "fonts": {
+    "title": "/System/Library/Fonts/Supplemental/Courier New Bold.ttf",
+    "caption": "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+  },
+  "props": [
+    "folder",
+    "clock",
+    "character",
+    "sticky_note"
+  ],
+  "halftone_step": 26,
+  "screen_angles": [
+    20,
+    50,
+    80
+  ],
+  "dark_ground": true,
+  "music": {
+    "ostinato": [
+      49.0,
+      49.0,
+      58.3,
+      49.0,
+      73.4,
+      65.4,
+      58.3,
+      55.0
+    ]
+  }
+}

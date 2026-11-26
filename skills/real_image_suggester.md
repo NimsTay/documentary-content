@@ -55,4 +55,4 @@ Rules for the table:
 - Add a one-line note under the table only if the scene has no good real photo (e.g. purely abstract visual).
 
 
-save output md into inputs/real_images_suggestions.md
+save output md into inputs/<docName>/real_images_suggestions.md (docName is the project folder name in inputs/)

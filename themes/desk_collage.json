@@ -1,0 +1,33 @@
+{
+  "style": "Desk collage: folders, sticky notes and clocks laid out on paper",
+  "transition": "gallery",
+  "fonts": {
+    "title": "/System/Library/Fonts/Supplemental/Arial Black.ttf",
+    "caption": "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+  },
+  "props": [
+    "folder",
+    "sticky_note",
+    "clock",
+    "character"
+  ],
+  "halftone_step": 22,
+  "screen_angles": [
+    15,
+    75,
+    45
+  ],
+  "dark_ground": false,
+  "music": {
+    "ostinato": [
+      55.0,
+      55.0,
+      65.4,
+      55.0,
+      82.4,
+      55.0,
+      73.4,
+      65.4
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 # Makes a depth map for every image in images/ using the free Depth Anything V2 Small model (runs locally, ~100MB download on first run).
-# images/scene_3.png -> depth_maps/scene_3.png (white = close, black = far). motion_video.py uses these for parallax.
+# images/scene_3.png -> depth_maps/scene_3.png (white = close, black = far). animate_parallax.py uses these for parallax.
 # Run from the documentary-content folder:
 #   python src/make_depth_maps.py
 import glob

@@ -1,0 +1,33 @@
+{
+  "style": "Riso poster: big flat sheets of ink, rays, stars and notes, printed slightly off register",
+  "transition": "blocks",
+  "fonts": {
+    "title": "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf",
+    "caption": "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+  },
+  "props": [
+    "starburst",
+    "sticky_note",
+    "rays",
+    "confetti"
+  ],
+  "halftone_step": 20,
+  "screen_angles": [
+    15,
+    45,
+    75
+  ],
+  "dark_ground": false,
+  "music": {
+    "ostinato": [
+      73.4,
+      73.4,
+      110.0,
+      73.4,
+      87.3,
+      73.4,
+      98.0,
+      110.0
+    ]
+  }
+}
